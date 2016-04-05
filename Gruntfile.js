@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         noarg: true,
         sub: true,
         undef: true,
-        unused: true,
+        unused: false,
         boss: true,
         eqnull: true,
         browser: true,
@@ -42,9 +42,10 @@ module.exports = function(grunt) {
         src: 'Gruntfile.js'
       },
       dev_test: {
-        src: [ '**/*.js' ]
+        src: [ 'js/**/*.js' ]
+      },
       dist_test: {
-        src: [ '**/*.min.js']
+        src: [ 'js/**/*.min.js']
       }
     },
     watch: {
@@ -56,8 +57,11 @@ module.exports = function(grunt) {
         tasks: ['jshint:gruntfile']
       },
       js: {
-        files: [ '**/*.js'],
+        files: [ 'js/**/*.js'],
         tasks: ['jshint']
+      },
+      html: {
+        files: ['**/*.html']
       }
     }
   });
