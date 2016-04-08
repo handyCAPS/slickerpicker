@@ -7,6 +7,8 @@ function get(el) {
 
 var SlickerPicker = function(element, options) {
 
+    "use strict";
+
     if (!element || element.tagName !== 'INPUT') {
         console.error('Element is not an input. ' + element);
         return;
@@ -16,7 +18,20 @@ var SlickerPicker = function(element, options) {
         base: 'SlickerPicker',
         table: 'table',
         day: 'day',
-        dayN: 'day-'
+        dayN: 'day-',
+        header: 'header'
+    };
+
+    var daysOfWeek = {
+        nl: [
+            'Ma',
+            'Di',
+            'Wo',
+            'Do',
+            'Vr',
+            'Za',
+            'Zo'
+        ]
     };
 
     function getClass(type, withPoint) {
@@ -39,15 +54,6 @@ var SlickerPicker = function(element, options) {
     }());
 
     var Table = (function() {
-        var daysOfWeek = [
-            'Ma',
-            'Di',
-            'Wo',
-            'Do',
-            'Vr',
-            'Za',
-            'Zo'
-        ];
         function createRow() {
             return document.createElement('tr');
         }
@@ -58,7 +64,8 @@ var SlickerPicker = function(element, options) {
             var header = createRow();
             for (var i = 0; i < 7; i++) {
                 var thead = document.createElement('th');
-                thead.textContent = daysOfWeek[i];
+                thead.textContent = daysOfWeek['nl'][i];
+                thead.classList.add(getClass('header'));
                 header.appendChild(thead);
             }
             return header;
