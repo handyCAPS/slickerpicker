@@ -63,7 +63,7 @@ var SlickerPicker = function(linkedInput, options) {
             var clickedElement = event.relatedTarget;
             // var parentDiv = findParent(clickedElement, 'div');
             // var closestPa = Element.closest.call(clickedElement, getClass('wrapper', true));
-            console.log(openTable);
+            console.log(event);
             Table.toggleTableVis(true);
         };
         function listenIn(stop) {
@@ -160,6 +160,10 @@ var SlickerPicker = function(linkedInput, options) {
 
     Input.listenIn();
     Input.listenOut();
+
+    document.body.addEventListener('click', function(event) {
+        console.log('clicked' + event);
+    });
 
 };
 
