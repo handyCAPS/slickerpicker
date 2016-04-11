@@ -43,6 +43,8 @@ var SlickerPicker = function(linkedInput, options) {
 
     var openTable = null;
 
+    var tableClicked = false;
+
     var daysOfWeek = {
         nl: [
             'Ma',
@@ -63,8 +65,12 @@ var SlickerPicker = function(linkedInput, options) {
             var clickedElement = event.relatedTarget;
             // var parentDiv = findParent(clickedElement, 'div');
             // var closestPa = Element.closest.call(clickedElement, getClass('wrapper', true));
-            console.log(event);
-            Table.toggleTableVis(true);
+            window.setTimeout(function() {
+                console.log('Tabele cLiked' + tableClicked);
+                if (!tableClicked) {
+                    Table.toggleTableVis(true);
+                }
+            }, 0);
         };
         function listenIn(stop) {
             linkedInput[['add', 'remove'][!!stop * 1] + 'EventListener']('focus', inListener);
@@ -135,6 +141,9 @@ var SlickerPicker = function(linkedInput, options) {
             } else {
                 toggleTableVis();
             }
+            get(getClass('wrapper', true))[0].addEventListener('click', function(event) {
+                tableClicked = true;
+            });
         }
 
         function blankDay(day) {
@@ -160,10 +169,6 @@ var SlickerPicker = function(linkedInput, options) {
 
     Input.listenIn();
     Input.listenOut();
-
-    document.body.addEventListener('click', function(event) {
-        console.log('clicked' + event);
-    });
 
 };
 
