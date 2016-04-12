@@ -11,6 +11,18 @@ function findParent(node, type) {
     return findParent(node.parent, type);
 }
 
+function multiplyValue(property, n) {
+    var value = parseInt(property.replace(/[^0-9]/g, ''));
+    var unit = property.replace(/[0-9]/gi, '');
+    return (value * n) + unit;
+}
+
+function setStyle(element, styleObject) {
+    for (var prop in styleObject) {
+        element.style[prop] = styleObject[prop];
+    }
+}
+
 
 
 var SlickerPicker = function(linkedInput, options) {
@@ -70,7 +82,7 @@ var SlickerPicker = function(linkedInput, options) {
                 if (!tableClicked) {
                     Table.toggleTableVis(true);
                 }
-            }, 0);
+            }, 1000);
         };
         function listenIn(stop) {
             linkedInput[['add', 'remove'][!!stop * 1] + 'EventListener']('focus', inListener);
@@ -106,7 +118,7 @@ var SlickerPicker = function(linkedInput, options) {
             return header;
         }
 
-        function createTable(days) {
+        function createTable(days, dummies) {
             var table = document.createElement('table');
             table.classList.add(getClass('table'));
             table.appendChild(createTableHeader());
@@ -116,6 +128,10 @@ var SlickerPicker = function(linkedInput, options) {
                     var cell = createCell();
                     var day = (7 * i) + j;
                     if (day > days) { day = ''; }
+                    if (dummies.length) {
+                        day -= dummies[1];
+                        if (day > dummies[0] && day < dummies[1] + 1) { day = ''; }
+                    }
                     cell.textContent = day;
                     cell.classList.add(getClass('day'), getClass('dayN') + day);
                     row.appendChild(cell);
@@ -129,21 +145,30 @@ var SlickerPicker = function(linkedInput, options) {
             var wrapper = document.createElement('div');
             wrapper.classList.add(getClass('wrapper'));
             wrapper.id = spid;
+
+            var styleObject = {
+                'display': 'inline-block',
+                'position': 'absolute',
+                'top': multiplyValue(window.getComputedStyle(linkedInput).getPropertyValue('height'), 2),
+                'left': 0
+            };
+            
+            setStyle(wrapper, styleObject);
             return wrapper;
         }
 
         function insertTable() {
             if (openTable === null) {
                 var wrapper = createWrapper();
-                wrapper.appendChild(createTable(31));
+                wrapper.appendChild(createTable(31, [0,4]));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
                 openTable = wrapper;
+                get(getClass('wrapper', true))[0].addEventListener('click', function(event) {
+                    tableClicked = true;
+                });
             } else {
                 toggleTableVis();
             }
-            get(getClass('wrapper', true))[0].addEventListener('click', function(event) {
-                tableClicked = true;
-            });
         }
 
         function blankDay(day) {
