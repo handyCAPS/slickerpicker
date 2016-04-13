@@ -118,20 +118,22 @@ var SlickerPicker = function(linkedInput, options) {
             return header;
         }
 
-        function createTable(days, dummies) {
+        function createTable(days, shift) {
             var table = document.createElement('table');
             table.classList.add(getClass('table'));
             table.appendChild(createTableHeader());
-            for (var i = 0; i < 5; i++) {
+            var weeks = Math.floor((days + shift) / 7) + 1;
+            for (var i = 0; i < weeks; i++) {
                 var row = createRow();
                 for (var j = 1; j < 8; j++) {
                     var cell = createCell();
-                    var day = (7 * i) + j;
-                    if (day > days) { day = ''; }
-                    if (dummies.length) {
-                        day -= dummies[1];
-                        if (day > dummies[0] && day < dummies[1] + 1) { day = ''; }
+                    var day = ((7 * i) + j);
+                    if (day <= shift) {
+                        day = '';
+                    } else {
+                        day = day - shift;
                     }
+                    if (day > days) { day = ''; }
                     cell.textContent = day;
                     cell.classList.add(getClass('day'), getClass('dayN') + day);
                     row.appendChild(cell);
@@ -160,12 +162,13 @@ var SlickerPicker = function(linkedInput, options) {
         function insertTable() {
             if (openTable === null) {
                 var wrapper = createWrapper();
-                wrapper.appendChild(createTable(31, [0,4]));
+                wrapper.appendChild(createTable(28, 4));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
                 openTable = wrapper;
                 get(getClass('wrapper', true))[0].addEventListener('click', function(event) {
                     tableClicked = true;
                 });
+                setParentPosition();
             } else {
                 toggleTableVis();
             }
@@ -184,6 +187,12 @@ var SlickerPicker = function(linkedInput, options) {
             }
         }
 
+        function setParentPosition() {
+            if (window.getComputedStyle(parentNode).getPropertyValue('position') === 'static') {
+                parentNode.style.position = 'relative';
+            }
+        }
+
         return {
             insertTable: insertTable,
             blankDay: blankDay,
@@ -194,6 +203,8 @@ var SlickerPicker = function(linkedInput, options) {
 
     Input.listenIn();
     Input.listenOut();
+
+    Table.insertTable();
 
 };
 

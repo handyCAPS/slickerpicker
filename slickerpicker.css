@@ -1,9 +1,29 @@
 
 
+/*
+electricBlue: #00DFFC
+lightBlue: #00B4CC
+mediumBlue: #008C9E
+darkBlue: #005F6B
+asphalt: #343838
+*/
+
+
 body {
     min-height: 100vh;
 }
 
-.SlickerPickerWrap {
+.SlickerPicker-wrapper {
     font-size: 12px;
+    font-family: sans-serif;
+    background: #00DFFC;
+}
+
+.SlickerPicker-table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px;
+    box-shadow: inset 0px 0px 2px black;
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
