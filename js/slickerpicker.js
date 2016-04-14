@@ -11,18 +11,6 @@ function findParent(node, type) {
     return findParent(node.parent, type);
 }
 
-function multiplyValue(property, n) {
-    var value = parseInt(property.replace(/[^0-9]/g, ''));
-    var unit = property.replace(/[0-9]/gi, '');
-    return (value * n) + unit;
-}
-
-function setStyle(element, styleObject) {
-    for (var prop in styleObject) {
-        element.style[prop] = styleObject[prop];
-    }
-}
-
 
 
 var SlickerPicker = function(linkedInput, options) {
@@ -40,7 +28,8 @@ var SlickerPicker = function(linkedInput, options) {
         table: 'table',
         day: 'day',
         dayN: 'day-',
-        header: 'header'
+        header: 'header',
+        yearWrapper: 'yearWrapper'
     };
 
     function getClass(type, withPoint) {
@@ -68,6 +57,18 @@ var SlickerPicker = function(linkedInput, options) {
             'Zo'
         ]
     };
+
+    function multiplyValue(property, n) {
+        var value = parseFloat(property);
+        var unit = property.replace(/[^a-z]/gi, '');
+        return (value * n) + unit;
+    }
+
+    function setStyle(element, styleObject) {
+        for (var prop in styleObject) {
+            element.style[prop] = styleObject[prop];
+        }
+    }
 
     var Input = (function() {
         var inListener = function() {
@@ -99,16 +100,16 @@ var SlickerPicker = function(linkedInput, options) {
     }());
 
     var Table = (function() {
-        function createRow() {
+        function getRow() {
             return document.createElement('tr');
         }
 
-        function createCell() {
+        function getCell() {
             return document.createElement('td');
         }
 
-        function createTableHeader() {
-            var header = createRow();
+        function getTableHeader() {
+            var header = getRow();
             for (var i = 0; i < 7; i++) {
                 var thead = document.createElement('th');
                 thead.textContent = daysOfWeek['nl'][i];
@@ -118,15 +119,15 @@ var SlickerPicker = function(linkedInput, options) {
             return header;
         }
 
-        function createTable(days, shift) {
+        function getTable(days, shift) {
             var table = document.createElement('table');
             table.classList.add(getClass('table'));
-            table.appendChild(createTableHeader());
+            table.appendChild(getTableHeader());
             var weeks = Math.floor((days + shift) / 7) + 1;
             for (var i = 0; i < weeks; i++) {
-                var row = createRow();
+                var row = getRow();
                 for (var j = 1; j < 8; j++) {
-                    var cell = createCell();
+                    var cell = getCell();
                     var day = ((7 * i) + j);
                     if (day <= shift) {
                         day = '';
@@ -143,7 +144,13 @@ var SlickerPicker = function(linkedInput, options) {
             return table;
         }
 
-        function createWrapper () {
+        function getYearWrapper() {
+            var yearWrapper = document.createElement('div');
+            yearWrapper.classList.add(getClass('yearWrapper'));
+            return yearWrapper;
+        }
+
+        function getWrapper() {
             var wrapper = document.createElement('div');
             wrapper.classList.add(getClass('wrapper'));
             wrapper.id = spid;
@@ -151,23 +158,21 @@ var SlickerPicker = function(linkedInput, options) {
             var styleObject = {
                 'display': 'inline-block',
                 'position': 'absolute',
-                'top': multiplyValue(window.getComputedStyle(linkedInput).getPropertyValue('height'), 2),
+                'top': window.getComputedStyle(linkedInput).lineHeight,
                 'left': 0
             };
-            
+
             setStyle(wrapper, styleObject);
             return wrapper;
         }
 
         function insertTable() {
             if (openTable === null) {
-                var wrapper = createWrapper();
-                wrapper.appendChild(createTable(28, 4));
+                var wrapper = getWrapper();
+                wrapper.appendChild(getYearWrapper());
+                wrapper.appendChild(getTable(28, 4));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
                 openTable = wrapper;
-                get(getClass('wrapper', true))[0].addEventListener('click', function(event) {
-                    tableClicked = true;
-                });
                 setParentPosition();
             } else {
                 toggleTableVis();
@@ -176,7 +181,6 @@ var SlickerPicker = function(linkedInput, options) {
 
         function blankDay(day) {
             var cell = get(getClass('dayN', true) + day)[0];
-            cell.classList.add('hidden');
             cell.textContent = '';
             cell.style.pointerEvents = 'none';
         }
