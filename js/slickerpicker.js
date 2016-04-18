@@ -3,15 +3,6 @@ function get(el) {
     return document['querySelector' + (el.indexOf('#') === 0 ? '' : 'All')](el);
 }
 
-function findParent(node, type) {
-    var tag = node.tagName.toLowerCase();
-    console.log(tag);
-    if (tag === type.toLowerCase()) { return node; }
-    if (!node.parent) { return null; }
-    return findParent(node.parent, type);
-}
-
-
 
 var SlickerPicker = function(linkedInput, options) {
 
@@ -29,7 +20,12 @@ var SlickerPicker = function(linkedInput, options) {
         day: 'day',
         dayN: 'day-',
         header: 'header',
-        yearWrapper: 'yearWrapper'
+        yearWrapper: 'yearWrapper',
+        forwardButton: 'forwardButton',
+        backwardButton: 'backwardButton',
+        yearBox: 'yearBox',
+        monthWrapper: 'monthWrapper',
+        monthBox: 'monthBox'
     };
 
     function getClass(type, withPoint) {
@@ -46,16 +42,63 @@ var SlickerPicker = function(linkedInput, options) {
 
     var tableClicked = false;
 
-    var daysOfWeek = {
-        nl: [
-            'Ma',
-            'Di',
-            'Wo',
-            'Do',
-            'Vr',
-            'Za',
-            'Zo'
-        ]
+    var dateObject = new Date();
+
+    var Dates = {
+        current: {
+            year: dateObject.getFullYear(),
+            month: dateObject.getMonth(),
+            day: dateObject.getDay()
+        },
+        set: {
+            year: null,
+            month: null,
+            day: null
+        }
+    };
+
+    var Words = {
+            year: {
+                nl: 'jaar',
+                en: 'year'
+            },
+            month: {
+                nl: [
+                    'Januari',
+                    'Februari',
+                    'Maart',
+                    'April',
+                    'Mei',
+                    'Juni',
+                    'Juli',
+                    'Augustus',
+                    'September',
+                    'Oktober',
+                    'November',
+                    'December'
+                ]
+            },
+            day: {
+                nl: [
+                    'Zo',
+                    'Ma',
+                    'Di',
+                    'Wo',
+                    'Do',
+                    'Vr',
+                    'Za'
+                ],
+                en: [
+                    'Su',
+                    'Mo',
+                    'Tu',
+                    'We',
+                    'Th',
+                    'Fr',
+                    'Sa'
+
+                ]
+            }
     };
 
     function multiplyValue(property, n) {
@@ -68,6 +111,40 @@ var SlickerPicker = function(linkedInput, options) {
         for (var prop in styleObject) {
             element.style[prop] = styleObject[prop];
         }
+        return element;
+    }
+
+    function flexAlign(element) {
+        var styles = {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around'
+        };
+
+        for (var style in styles) {
+            element = setStyle(element, getPrefixed(style, styles[style]));
+        }
+
+        return element;
+    }
+
+    function getPrefixed(property, value) {
+        var prefixes = [
+            'webkit',
+            'Moz',
+            'o',
+            'ms'
+        ],
+            resultOb = {};
+
+        prefixes.forEach(function(prefix) {
+            var preProp = prefix + property[0].toUpperCase() + property.slice(1, property.length);
+            resultOb[preProp] = value;
+        });
+
+        resultOb[property] = value;
+
+        return resultOb;
     }
 
     var Input = (function() {
@@ -112,7 +189,7 @@ var SlickerPicker = function(linkedInput, options) {
             var header = getRow();
             for (var i = 0; i < 7; i++) {
                 var thead = document.createElement('th');
-                thead.textContent = daysOfWeek['nl'][i];
+                thead.textContent = Words.day.nl[i];
                 thead.classList.add(getClass('header'));
                 header.appendChild(thead);
             }
@@ -144,10 +221,50 @@ var SlickerPicker = function(linkedInput, options) {
             return table;
         }
 
-        function getYearWrapper() {
+        function getButton(listener, forward) {
+            var idx = !!forward * 1;
+            var button = document.createElement('div');
+            button.classList.add(getClass(['back', 'forward'][idx] + 'Button'));
+            button.innerHTML = ["&vltri;", "&vrtri;"][idx];
+            button.style.cursor = 'pointer';
+            button = setStyle(button, getPrefixed('userSelect', 'none'));
+            button.addEventListener('click', listener);
+            return button;
+        }
+
+        function getValueWrapper(month) {
+            var idx = !!month * 1;
+            var type = ['year', 'month'][idx];
             var yearWrapper = document.createElement('div');
-            yearWrapper.classList.add(getClass('yearWrapper'));
+            yearWrapper.classList.add(getClass(type + 'Wrapper'));
+            yearWrapper = flexAlign(yearWrapper);
+
+            var goBackListener = function() { moveYear(); };
+            var goBack = getButton(goBackListener);
+            goBack.style.display = 'inline-block';
+
+            var yearBox = document.createElement('div');
+            yearBox.classList.add(getClass(type + 'Box'));
+            yearBox.textContent = month ? Words.month.nl[Dates.current.month] : Dates.current.year;
+            yearBox.style.display = 'inline-block';
+
+            var goForwardListener = function() { moveYear(true); };
+            var goForward = getButton(goForwardListener, true);
+            goForward.style.display = 'inline-block';
+
+            yearWrapper.appendChild(goBack);
+            yearWrapper.appendChild(yearBox);
+            yearWrapper.appendChild(goForward);
+
             return yearWrapper;
+        }
+
+        function getMonthWrapper(month) {
+            var wrapper = document.createElement('div');
+            wrapper.classList.add(getClass('monthWrapper'));
+            wrapper.textContent = Words.month.nl[month];
+
+            return wrapper;
         }
 
         function getWrapper() {
@@ -156,20 +273,21 @@ var SlickerPicker = function(linkedInput, options) {
             wrapper.id = spid;
 
             var styleObject = {
-                'display': 'inline-block',
-                'position': 'absolute',
-                'top': window.getComputedStyle(linkedInput).lineHeight,
-                'left': 0
+                display: 'inline-block',
+                position: 'absolute',
+                top: 0,
+                left: 0
             };
 
-            setStyle(wrapper, styleObject);
+            wrapper = setStyle(wrapper, styleObject);
             return wrapper;
         }
 
         function insertTable() {
             if (openTable === null) {
                 var wrapper = getWrapper();
-                wrapper.appendChild(getYearWrapper());
+                wrapper.appendChild(getValueWrapper());
+                wrapper.appendChild(getValueWrapper(true));
                 wrapper.appendChild(getTable(28, 4));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
                 openTable = wrapper;
@@ -181,7 +299,7 @@ var SlickerPicker = function(linkedInput, options) {
 
         function blankDay(day) {
             var cell = get(getClass('dayN', true) + day)[0];
-            cell.textContent = '';
+            cell.innerHTML = "&vltri;";
             cell.style.pointerEvents = 'none';
         }
 
@@ -196,6 +314,15 @@ var SlickerPicker = function(linkedInput, options) {
                 parentNode.style.position = 'relative';
             }
         }
+
+        function moveYear(forward) {
+            var yearBox = get(getClass('yearBox', true))[0];
+            var setYear = parseInt(yearBox.textContent);
+            var newYear = forward ? setYear + 1 : setYear - 1;
+            yearBox.textContent = newYear;
+            Dates.set.year = newYear;
+        }
+
 
         return {
             insertTable: insertTable,
