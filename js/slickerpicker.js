@@ -13,6 +13,27 @@ var SlickerPicker = function(linkedInput, options) {
         return;
     }
 
+    /**
+     * Get the vendor prefix
+     * @via https://davidwalsh.name/vendor-prefix
+     */
+    var prefix = (function () {
+      var styles = window.getComputedStyle(document.documentElement, ''),
+        pre = (Array.prototype.slice
+          .call(styles)
+          .join('')
+          .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+        )[1],
+        dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+      return {
+        dom: dom,
+        lowercase: pre,
+        css: '-' + pre + '-',
+        js: pre[0].toUpperCase() + pre.substr(1)
+      };
+    })();
+
+
     var Classes = {
         base: 'SlickerPicker',
         wrapper: 'wrapper',
@@ -56,6 +77,7 @@ var SlickerPicker = function(linkedInput, options) {
             day: null
         }
     };
+
 
     var Words = {
             year: {
@@ -239,7 +261,7 @@ var SlickerPicker = function(linkedInput, options) {
             yearWrapper.classList.add(getClass(type + 'Wrapper'));
             yearWrapper = flexAlign(yearWrapper);
 
-            var goBackListener = function() { moveYear(); };
+            var goBackListener = function() { moveValue(type); };
             var goBack = getButton(goBackListener);
             goBack.style.display = 'inline-block';
 
@@ -248,7 +270,7 @@ var SlickerPicker = function(linkedInput, options) {
             yearBox.textContent = month ? Words.month.nl[Dates.current.month] : Dates.current.year;
             yearBox.style.display = 'inline-block';
 
-            var goForwardListener = function() { moveYear(true); };
+            var goForwardListener = function() { moveValue(type, true); };
             var goForward = getButton(goForwardListener, true);
             goForward.style.display = 'inline-block';
 
@@ -315,12 +337,33 @@ var SlickerPicker = function(linkedInput, options) {
             }
         }
 
+        function moveValue(type, forward) {
+            var target     = get(getClass(type + 'Box', true))[0],
+                setValue   = Dates.set[type],
+                newValue   = forward ? setValue + 1 : setValue - 1,
+                content    = newValue;
+
+            if (type === 'month') { content = Words.month.nl[newValue]; }
+
+            target.textContent = content;
+
+            Dates.set[type] = newValue;
+        }
+
         function moveYear(forward) {
             var yearBox = get(getClass('yearBox', true))[0];
             var setYear = parseInt(yearBox.textContent);
             var newYear = forward ? setYear + 1 : setYear - 1;
             yearBox.textContent = newYear;
             Dates.set.year = newYear;
+        }
+        function moveMonth(forward) {
+            var monthBox = get(getClass('monthBox', true))[0];
+            var setMonth = Dates.set.month;
+            var newMonth = forward ? setMonth + 1 : setMonth - 1;
+
+            monthBox.textContent = Words.month.nl[newMonth];
+            Dates.set.month = newMonth;
         }
 
 
@@ -332,10 +375,18 @@ var SlickerPicker = function(linkedInput, options) {
     }());
 
 
-    Input.listenIn();
-    Input.listenOut();
+    function init() {
 
-    Table.insertTable();
+        Dates.set = Dates.current;
+
+        Table.insertTable();
+
+        // Input.listenIn();
+        // Input.listenOut();
+
+    }
+
+    init();
 
 };
 
