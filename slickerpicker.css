@@ -16,14 +16,16 @@ body {
 .SlickerPicker-wrapper {
     font-size: 16px;
     font-family: sans-serif;
-    background: #00DFFC;
+    background: #343838;
+    color: #FFF;
 }
 
 .SlickerPicker-table td {
     text-align: center;
     vertical-align: middle;
     padding: 4px;
-    box-shadow: inset 0px 0px 2px black;
+    /*box-shadow: inset 0px 0px 2px black;*/
     background-color: #f0f0f0;
+    color: #343838;
     cursor: pointer;
 }

@@ -257,28 +257,33 @@ var SlickerPicker = function(linkedInput, options) {
         function getValueWrapper(month) {
             var idx = !!month * 1;
             var type = ['year', 'month'][idx];
-            var yearWrapper = document.createElement('div');
-            yearWrapper.classList.add(getClass(type + 'Wrapper'));
-            yearWrapper = flexAlign(yearWrapper);
+            var valueWrapper = document.createElement('div');
+            valueWrapper.classList.add(getClass(type + 'Wrapper'));
+            valueWrapper = flexAlign(valueWrapper);
 
             var goBackListener = function() { moveValue(type); };
             var goBack = getButton(goBackListener);
             goBack.style.display = 'inline-block';
 
-            var yearBox = document.createElement('div');
-            yearBox.classList.add(getClass(type + 'Box'));
-            yearBox.textContent = month ? Words.month.nl[Dates.current.month] : Dates.current.year;
-            yearBox.style.display = 'inline-block';
+            var valueBox = document.createElement('div');
+            valueBox.classList.add(getClass(type + 'Box'));
+            valueBox.textContent = month ? Words.month.nl[Dates.current.month] : Dates.current.year;
+            var valueBoxStyles = {
+                textAlign: 'center',
+                width: '66%',
+                display: 'inline-block'
+            };
+            valueBox = setStyle(valueBox, valueBoxStyles);
 
             var goForwardListener = function() { moveValue(type, true); };
             var goForward = getButton(goForwardListener, true);
             goForward.style.display = 'inline-block';
 
-            yearWrapper.appendChild(goBack);
-            yearWrapper.appendChild(yearBox);
-            yearWrapper.appendChild(goForward);
+            valueWrapper.appendChild(goBack);
+            valueWrapper.appendChild(valueBox);
+            valueWrapper.appendChild(goForward);
 
-            return yearWrapper;
+            return valueWrapper;
         }
 
         function getMonthWrapper(month) {
