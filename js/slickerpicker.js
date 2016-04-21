@@ -169,6 +169,13 @@ var SlickerPicker = function(linkedInput, options) {
         return resultOb;
     }
 
+    function getMonthInfo(month, year) {
+        return {
+            dayShift: new Date(month + '/1/' + year).getDay(),
+            days: new Date(year, month, 0).getDate()
+        };
+    }
+
     var Input = (function() {
         var inListener = function() {
             Table.insertTable();
@@ -310,12 +317,15 @@ var SlickerPicker = function(linkedInput, options) {
             return wrapper;
         }
 
-        function insertTable() {
+        function insertTable(month, year) {
             if (openTable === null) {
+                var monthInfo = getMonthInfo(month, year),
+                    numDays = monthInfo.days,
+                    dayShift = monthInfo.dayShift;
                 var wrapper = getWrapper();
                 wrapper.appendChild(getValueWrapper());
                 wrapper.appendChild(getValueWrapper(true));
-                wrapper.appendChild(getTable(28, 4));
+                wrapper.appendChild(getTable(numDays, dayShift));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
                 openTable = wrapper;
                 setParentPosition();
@@ -355,22 +365,6 @@ var SlickerPicker = function(linkedInput, options) {
             Dates.set[type] = newValue;
         }
 
-        function moveYear(forward) {
-            var yearBox = get(getClass('yearBox', true))[0];
-            var setYear = parseInt(yearBox.textContent);
-            var newYear = forward ? setYear + 1 : setYear - 1;
-            yearBox.textContent = newYear;
-            Dates.set.year = newYear;
-        }
-        function moveMonth(forward) {
-            var monthBox = get(getClass('monthBox', true))[0];
-            var setMonth = Dates.set.month;
-            var newMonth = forward ? setMonth + 1 : setMonth - 1;
-
-            monthBox.textContent = Words.month.nl[newMonth];
-            Dates.set.month = newMonth;
-        }
-
 
         return {
             insertTable: insertTable,
@@ -384,7 +378,7 @@ var SlickerPicker = function(linkedInput, options) {
 
         Dates.set = Dates.current;
 
-        Table.insertTable();
+        Table.insertTable(Dates.current.month +1, Dates.current.year);
 
         // Input.listenIn();
         // Input.listenOut();

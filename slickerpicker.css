@@ -14,18 +14,26 @@ body {
 }
 
 .SlickerPicker-wrapper {
-    font-size: 16px;
+    /*font-size: 75%;*/
     font-family: sans-serif;
-    background: #343838;
-    color: #FFF;
+    background: #e0e0e0;
+    padding: 0.2em;
+}
+
+.SlickerPicker-table {
+    /*border-collapse: collapse;*/
+}
+
+.SlickerPicker-table th {
+    font-size: 75%;
+    text-align: center;
 }
 
 .SlickerPicker-table td {
     text-align: center;
     vertical-align: middle;
-    padding: 4px;
-    /*box-shadow: inset 0px 0px 2px black;*/
-    background-color: #f0f0f0;
+    padding: 1em;
+    background-color: #f4f4f4;
     color: #343838;
     cursor: pointer;
 }
