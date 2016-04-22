@@ -59,7 +59,8 @@ var SlickerPicker = function(linkedInput, options) {
 
     var parentNode = linkedInput.parentNode;
 
-    var openTable = null;
+    var openTableWrapper = null,
+        openTable = null;
 
     var tableClicked = false;
 
@@ -139,7 +140,6 @@ var SlickerPicker = function(linkedInput, options) {
     function flexAlign(element) {
         var styles = {
             display: 'flex',
-            flexDirection: 'row',
             justifyContent: 'space-around'
         };
 
@@ -229,7 +229,7 @@ var SlickerPicker = function(linkedInput, options) {
             var table = document.createElement('table');
             table.classList.add(getClass('table'));
             table.appendChild(getTableHeader());
-            var weeks = Math.floor((days + shift) / 7) + 1;
+            var weeks = Math.ceil((days + shift) / 7);
             for (var i = 0; i < weeks; i++) {
                 var row = getRow();
                 for (var j = 1; j < 8; j++) {
@@ -253,9 +253,16 @@ var SlickerPicker = function(linkedInput, options) {
         function getButton(listener, forward) {
             var idx = !!forward * 1;
             var button = document.createElement('div');
-            button.classList.add(getClass(['back', 'forward'][idx] + 'Button'));
+            button.classList.add(getClass(['backward', 'forward'][idx] + 'Button'));
             button.innerHTML = ["&vltri;", "&vrtri;"][idx];
-            button.style.cursor = 'pointer';
+
+            var buttonStyles = {
+                width: '25%',
+                textAlign: 'center',
+                cursor: 'pointer'
+            };
+
+            button = setStyle(button, buttonStyles);
             button = setStyle(button, getPrefixed('userSelect', 'none'));
             button.addEventListener('click', listener);
             return button;
@@ -266,7 +273,7 @@ var SlickerPicker = function(linkedInput, options) {
             var type = ['year', 'month'][idx];
             var valueWrapper = document.createElement('div');
             valueWrapper.classList.add(getClass(type + 'Wrapper'));
-            valueWrapper = flexAlign(valueWrapper);
+            // valueWrapper = flexAlign(valueWrapper);
 
             var goBackListener = function() { moveValue(type); };
             var goBack = getButton(goBackListener);
@@ -277,7 +284,7 @@ var SlickerPicker = function(linkedInput, options) {
             valueBox.textContent = month ? Words.month.nl[Dates.current.month] : Dates.current.year;
             var valueBoxStyles = {
                 textAlign: 'center',
-                width: '66%',
+                width: '50%',
                 display: 'inline-block'
             };
             valueBox = setStyle(valueBox, valueBoxStyles);
@@ -317,21 +324,31 @@ var SlickerPicker = function(linkedInput, options) {
             return wrapper;
         }
 
-        function insertTable(month, year) {
-            if (openTable === null) {
-                var monthInfo = getMonthInfo(month, year),
-                    numDays = monthInfo.days,
-                    dayShift = monthInfo.dayShift;
+        function insertWrapper() {
+            if (openTableWrapper === null) {
+                setParentPosition();
                 var wrapper = getWrapper();
                 wrapper.appendChild(getValueWrapper());
                 wrapper.appendChild(getValueWrapper(true));
-                wrapper.appendChild(getTable(numDays, dayShift));
                 parentNode.insertBefore(wrapper, linkedInput.nextSibling);
-                openTable = wrapper;
-                setParentPosition();
+                openTableWrapper = wrapper;
+                insertTable(Dates.set.month + 1, Dates.set.year);
             } else {
                 toggleTableVis();
             }
+        }
+
+        function insertTable(month, year) {
+            if (openTable !== null) {
+                openTable.remove();
+            }
+            var wrapper = openTableWrapper;
+            var monthInfo = getMonthInfo(month, year),
+                numDays = monthInfo.days,
+                dayShift = monthInfo.dayShift;
+            var table = getTable(numDays, dayShift);
+            wrapper.appendChild(table);
+            openTable = table;
         }
 
         function blankDay(day) {
@@ -341,8 +358,8 @@ var SlickerPicker = function(linkedInput, options) {
         }
 
         function toggleTableVis(off) {
-            if (openTable !== null) {
-                openTable.hidden = !!off;
+            if (openTableWrapper !== null) {
+                openTableWrapper.hidden = !!off;
             }
         }
 
@@ -363,10 +380,13 @@ var SlickerPicker = function(linkedInput, options) {
             target.textContent = content;
 
             Dates.set[type] = newValue;
+
+            insertTable(Dates.set.month + 1, Dates.set.year);
         }
 
 
         return {
+            insertWrapper: insertWrapper,
             insertTable: insertTable,
             blankDay: blankDay,
             toggleTableVis: toggleTableVis
@@ -378,7 +398,7 @@ var SlickerPicker = function(linkedInput, options) {
 
         Dates.set = Dates.current;
 
-        Table.insertTable(Dates.current.month +1, Dates.current.year);
+        Table.insertWrapper();
 
         // Input.listenIn();
         // Input.listenOut();

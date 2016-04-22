@@ -21,7 +21,7 @@ body {
 }
 
 .SlickerPicker-table {
-    /*border-collapse: collapse;*/
+    border-collapse: collapse;
 }
 
 .SlickerPicker-table th {
@@ -30,10 +30,12 @@ body {
 }
 
 .SlickerPicker-table td {
+    width: 3em;
+    height: 3em;
     text-align: center;
     vertical-align: middle;
-    padding: 1em;
     background-color: #f4f4f4;
     color: #343838;
     cursor: pointer;
+    box-shadow: inset 0 0 1px 0 rgba(0,0,0,0.7);
 }
