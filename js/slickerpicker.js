@@ -211,7 +211,9 @@ var SlickerPicker = function(linkedInput, options) {
         }
 
         function getCell() {
-            return document.createElement('td');
+            var cell = document.createElement('td');
+            cell.tabIndex = 1;
+            return cell;
         }
 
         function getTableHeader() {
@@ -228,6 +230,7 @@ var SlickerPicker = function(linkedInput, options) {
         function getTable(days, shift) {
             var table = document.createElement('table');
             table.classList.add(getClass('table'));
+            table.tabIndex = 1;
             table.appendChild(getTableHeader());
             var weeks = Math.ceil((days + shift) / 7);
             for (var i = 0; i < weeks; i++) {
@@ -257,6 +260,7 @@ var SlickerPicker = function(linkedInput, options) {
             button.innerHTML = ["&vltri;", "&vrtri;"][idx];
 
             var buttonStyles = {
+                display: 'inline-block',
                 width: '25%',
                 textAlign: 'center',
                 cursor: 'pointer'
@@ -273,11 +277,9 @@ var SlickerPicker = function(linkedInput, options) {
             var type = ['year', 'month'][idx];
             var valueWrapper = document.createElement('div');
             valueWrapper.classList.add(getClass(type + 'Wrapper'));
-            // valueWrapper = flexAlign(valueWrapper);
 
             var goBackListener = function() { moveValue(type); };
             var goBack = getButton(goBackListener);
-            goBack.style.display = 'inline-block';
 
             var valueBox = document.createElement('div');
             valueBox.classList.add(getClass(type + 'Box'));
@@ -291,21 +293,12 @@ var SlickerPicker = function(linkedInput, options) {
 
             var goForwardListener = function() { moveValue(type, true); };
             var goForward = getButton(goForwardListener, true);
-            goForward.style.display = 'inline-block';
 
             valueWrapper.appendChild(goBack);
             valueWrapper.appendChild(valueBox);
             valueWrapper.appendChild(goForward);
 
             return valueWrapper;
-        }
-
-        function getMonthWrapper(month) {
-            var wrapper = document.createElement('div');
-            wrapper.classList.add(getClass('monthWrapper'));
-            wrapper.textContent = Words.month.nl[month];
-
-            return wrapper;
         }
 
         function getWrapper() {
@@ -325,17 +318,13 @@ var SlickerPicker = function(linkedInput, options) {
         }
 
         function insertWrapper() {
-            if (openTableWrapper === null) {
-                setParentPosition();
-                var wrapper = getWrapper();
-                wrapper.appendChild(getValueWrapper());
-                wrapper.appendChild(getValueWrapper(true));
-                parentNode.insertBefore(wrapper, linkedInput.nextSibling);
-                openTableWrapper = wrapper;
-                insertTable(Dates.set.month + 1, Dates.set.year);
-            } else {
-                toggleTableVis();
-            }
+            setParentPosition();
+            var wrapper = getWrapper();
+            wrapper.appendChild(getValueWrapper());
+            wrapper.appendChild(getValueWrapper(true));
+            parentNode.insertBefore(wrapper, linkedInput.nextSibling);
+            openTableWrapper = wrapper;
+            insertTable(Dates.set.month + 1, Dates.set.year);
         }
 
         function insertTable(month, year) {
@@ -344,17 +333,9 @@ var SlickerPicker = function(linkedInput, options) {
             }
             var wrapper = openTableWrapper;
             var monthInfo = getMonthInfo(month, year),
-                numDays = monthInfo.days,
-                dayShift = monthInfo.dayShift;
-            var table = getTable(numDays, dayShift);
+                table = getTable(monthInfo.days, monthInfo.dayShift);
             wrapper.appendChild(table);
             openTable = table;
-        }
-
-        function blankDay(day) {
-            var cell = get(getClass('dayN', true) + day)[0];
-            cell.innerHTML = "&vltri;";
-            cell.style.pointerEvents = 'none';
         }
 
         function toggleTableVis(off) {
@@ -375,7 +356,17 @@ var SlickerPicker = function(linkedInput, options) {
                 newValue   = forward ? setValue + 1 : setValue - 1,
                 content    = newValue;
 
-            if (type === 'month') { content = Words.month.nl[newValue]; }
+            if (type === 'month') {
+                if (newValue < 0) {
+                    newValue = 11;
+                    moveValue('year');
+                }
+                if (newValue > 11) {
+                    newValue = 0;
+                    moveValue('year', true);
+                }
+                content = Words.month.nl[newValue];
+            }
 
             target.textContent = content;
 
@@ -386,10 +377,7 @@ var SlickerPicker = function(linkedInput, options) {
 
 
         return {
-            insertWrapper: insertWrapper,
-            insertTable: insertTable,
-            blankDay: blankDay,
-            toggleTableVis: toggleTableVis
+            insertWrapper: insertWrapper
         };
     }());
 
