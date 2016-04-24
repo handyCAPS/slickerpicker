@@ -268,7 +268,21 @@ var SlickerPicker = function(linkedInput, options) {
 
             button = setStyle(button, buttonStyles);
             button = setStyle(button, getPrefixed('userSelect', 'none'));
+            button.tabIndex = 1;
             button.addEventListener('click', listener);
+            button.addEventListener('keydown', function(event) {
+                // Using keydown because thats when the spacebar scrolls,
+                // which needs to be prevented
+                switch (event.key.toLowerCase()) {
+                    case 'enter':
+                        return listener(arguments);
+                    case ' ':
+                        event.preventDefault();
+                        return listener(arguments);
+                    default:
+                        return;
+                }
+            });
             return button;
         }
 
