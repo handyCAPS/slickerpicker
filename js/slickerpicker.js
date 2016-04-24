@@ -171,8 +171,8 @@ var SlickerPicker = function(linkedInput, options) {
 
     function getMonthInfo(month, year) {
         return {
-            dayShift: new Date(month + '/1/' + year).getDay(),
-            days: new Date(year, month, 0).getDate()
+            dayShift: new Date(year, month, 1).getDay(),
+            days: new Date(year, month + 1, 0).getDate()
         };
     }
 
@@ -338,7 +338,7 @@ var SlickerPicker = function(linkedInput, options) {
             wrapper.appendChild(getValueWrapper(true));
             parentNode.insertBefore(wrapper, linkedInput.nextSibling);
             openTableWrapper = wrapper;
-            insertTable(Dates.set.month + 1, Dates.set.year);
+            insertTable(Dates.set.month, Dates.set.year);
         }
 
         function insertTable(month, year) {
@@ -386,7 +386,7 @@ var SlickerPicker = function(linkedInput, options) {
 
             Dates.set[type] = newValue;
 
-            insertTable(Dates.set.month + 1, Dates.set.year);
+            insertTable(Dates.set.month, Dates.set.year);
         }
 
 
