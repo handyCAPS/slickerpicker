@@ -48,7 +48,8 @@ var SlickerPicker = function(linkedInput, options) {
         monthWrapper: 'monthWrapper',
         monthBox: 'monthBox',
         resetButton: 'resetButton',
-        hiddenInput: 'hiddenInput'
+        hiddenInput: 'hiddenInput',
+        focused: 'focused'
     };
 
     function getClass(type, withPoint) {
@@ -74,7 +75,7 @@ var SlickerPicker = function(linkedInput, options) {
         current: {
             year: dateObject.getFullYear(),
             month: dateObject.getMonth(),
-            day: dateObject.getDay()
+            day: dateObject.getDate()
         },
         set: {
             year: null,
@@ -228,9 +229,19 @@ var SlickerPicker = function(linkedInput, options) {
             return document.createElement('tr');
         }
 
-        function getCell() {
+        function getCell(day) {
             var cell = document.createElement('td');
-            cell.tabIndex = 1;
+            cell.dataset.day = day;
+
+            var selectDay = function(event) {
+                setFocusedDay(event.currentTarget);
+                Dates.set.day = day;
+            };
+
+            if (typeof day === 'number') {
+                cell.tabIndex = 1;
+                cell.addEventListener('click', selectDay);
+            }
             return cell;
         }
 
@@ -254,7 +265,6 @@ var SlickerPicker = function(linkedInput, options) {
             for (var i = 0; i < weeks; i++) {
                 var row = getRow();
                 for (var j = 1; j < 8; j++) {
-                    var cell = getCell();
                     var day = ((7 * i) + j);
                     if (day <= shift) {
                         day = '';
@@ -262,6 +272,7 @@ var SlickerPicker = function(linkedInput, options) {
                         day = day - shift;
                     }
                     if (day > days) { day = ''; }
+                    var cell = getCell(day);
                     cell.textContent = day;
                     cell.classList.add(getClass('day'), getClass('dayN') + day);
                     row.appendChild(cell);
@@ -386,6 +397,7 @@ var SlickerPicker = function(linkedInput, options) {
             parentNode.insertBefore(wrapper, linkedInput.nextSibling);
             openTableWrapper = wrapper;
             insertTable();
+            focusCurrentDay();
         }
 
         function insertTable() {
@@ -396,6 +408,7 @@ var SlickerPicker = function(linkedInput, options) {
             var monthInfo = getMonthInfo(Dates.set.month, Dates.set.year),
                 table = getTable(monthInfo.days, monthInfo.dayShift);
             wrapper.appendChild(table);
+            focusCurrentDay();
             openTable = table;
         }
 
@@ -417,6 +430,15 @@ var SlickerPicker = function(linkedInput, options) {
                 text = Words.month[lang][Dates.set.month];
             }
             ValueEl[type].textContent = text;
+        }
+
+        function focusCurrentDay() {
+            get(getClass('dayN', true) + (Dates.set.day || 1))[0].classList.add(getClass('focused'));
+        }
+
+        function setFocusedDay(dayElement) {
+            get(getClass('focused', true))[0].classList.remove(getClass('focused'));
+            dayElement.classList.add(getClass('focused'));
         }
 
         function moveValue(type, forward) {
@@ -471,8 +493,13 @@ var SlickerPicker = function(linkedInput, options) {
 
     }
 
-    init();
+    return {
+        init: init,
+        Table: Table
+    };
 
 };
 
 var picker = new SlickerPicker(get('#test'));
+
+picker.init();

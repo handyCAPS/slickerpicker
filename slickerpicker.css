@@ -41,6 +41,6 @@ body {
     transition: transform 0.3s;
 }
 
-.SlickerPicker-table td:focus {
+.SlickerPicker-table td:focus, .SlickerPicker-focused {
     transform: scale(1.3);
 }
