@@ -47,7 +47,8 @@ var SlickerPicker = function(linkedInput, options) {
         yearBox: 'yearBox',
         monthWrapper: 'monthWrapper',
         monthBox: 'monthBox',
-        resetButton: 'resetButton'
+        resetButton: 'resetButton',
+        hiddenInput: 'hiddenInput'
     };
 
     function getClass(type, withPoint) {
@@ -315,6 +316,18 @@ var SlickerPicker = function(linkedInput, options) {
             return button;
         }
 
+        function getHiddenInput() {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = getClass('hiddenInput') + spid;
+
+            return input;
+        }
+
+        function insertHiddenInput() {
+            parentNode.insertBefore(getHiddenInput(), linkedInput.nextSibling);
+        }
+
         function getValueWrapper(month) {
             var idx = !!month * 1;
             var type = ['year', 'month'][idx];
@@ -439,7 +452,8 @@ var SlickerPicker = function(linkedInput, options) {
 
         return {
             insertWrapper: insertWrapper,
-            resetCalender: resetCalender
+            resetCalender: resetCalender,
+            insertHiddenInput: insertHiddenInput
         };
     }());
 
@@ -449,6 +463,8 @@ var SlickerPicker = function(linkedInput, options) {
         initDates();
 
         Table.insertWrapper();
+
+        Table.insertHiddenInput();
 
         // Input.listenIn();
         // Input.listenOut();
