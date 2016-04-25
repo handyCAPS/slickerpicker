@@ -65,7 +65,7 @@ var SlickerPicker = function(linkedInput, options) {
 
     var tableClicked = false;
 
-    var dateObject = new Date();
+    var dateObject = new Date(Date.now());
 
     var lang = 'nl';
 
@@ -182,6 +182,12 @@ var SlickerPicker = function(linkedInput, options) {
             dayShift: new Date(year, month, 1).getDay(),
             days: new Date(year, month + 1, 0).getDate()
         };
+    }
+
+    function initDates() {
+        for (var prop in Dates.current) {
+            Dates.set[prop] = Dates.current[prop];
+        }
     }
 
 
@@ -321,7 +327,6 @@ var SlickerPicker = function(linkedInput, options) {
             var valueBox = document.createElement('div');
             valueBox.classList.add(getClass(type + 'Box'));
 
-            var valueBoxText = month ? Words.month[lang][Dates.current.month] : Dates.current.year;
             var valueBoxStyles = {
                 textAlign: 'center',
                 width: '50%',
@@ -331,7 +336,7 @@ var SlickerPicker = function(linkedInput, options) {
 
             ValueEl[type] = valueBox;
 
-            setValueText(type, valueBoxText);
+            setValueText(type);
 
             var goForwardListener = function() { moveValue(type, true); };
             var goForward = getButton(goForwardListener, true);
@@ -425,9 +430,10 @@ var SlickerPicker = function(linkedInput, options) {
         }
 
         function resetCalender() {
-            Dates.set = Dates.current;
+            initDates();
+            setValueText('year');
+            setValueText('month');
             insertTable();
-            console.log('resetting ...');
         }
 
 
@@ -440,7 +446,7 @@ var SlickerPicker = function(linkedInput, options) {
 
     function init() {
 
-        Dates.set = Dates.current;
+        initDates();
 
         Table.insertWrapper();
 
