@@ -134,11 +134,6 @@ var SlickerPicker = function(linkedInput, options) {
             }
     };
 
-    function multiplyValue(property, n) {
-        var value = parseFloat(property);
-        var unit = property.replace(/[^a-z]/gi, '');
-        return (value * n) + unit;
-    }
 
     function setStyle(element, styleObject) {
         for (var prop in styleObject) {
@@ -147,18 +142,6 @@ var SlickerPicker = function(linkedInput, options) {
         return element;
     }
 
-    function flexAlign(element) {
-        var styles = {
-            display: 'flex',
-            justifyContent: 'space-around'
-        };
-
-        for (var style in styles) {
-            element = setStyle(element, getPrefixed(style, styles[style]));
-        }
-
-        return element;
-    }
 
     function getPrefixed(property, value) {
         var prefixes = [
@@ -190,6 +173,11 @@ var SlickerPicker = function(linkedInput, options) {
         for (var prop in Dates.current) {
             Dates.set[prop] = Dates.current[prop];
         }
+    }
+
+    function getSetDate() {
+        var setDate = new Date(Dates.set.year, Dates.set.month, Dates.set.day);
+        return setDate;
     }
 
 
@@ -236,6 +224,7 @@ var SlickerPicker = function(linkedInput, options) {
             var selectDay = function(event) {
                 setFocusedDay(event.currentTarget);
                 Dates.set.day = day;
+                linkedInput.value = getSetDate().toLocaleDateString();
             };
 
             if (typeof day === 'number') {
