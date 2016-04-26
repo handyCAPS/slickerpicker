@@ -62,14 +62,23 @@ var SlickerPicker = function(linkedInput, options) {
 
     var parentNode = linkedInput.parentNode;
 
-    var openTableWrapper = null,
-        openTable = null;
-
     var tableClicked = false;
+
+    var tableIsOpen = false;
 
     var dateObject = new Date(Date.now());
 
     var lang = 'nl';
+
+    var SPEL = {
+        tableWrapper: null,
+        table: null,
+        resetButton: null,
+        value: {
+            year: null,
+            month: null
+        }
+    };
 
     var Dates = {
         current: {
@@ -82,11 +91,6 @@ var SlickerPicker = function(linkedInput, options) {
             month: null,
             day: null
         }
-    };
-
-    var ValueEl = {
-        year: null,
-        month: null
     };
 
 
@@ -185,7 +189,12 @@ var SlickerPicker = function(linkedInput, options) {
 
     var Input = (function() {
         var inListener = function() {
-            Table.insertTable();
+            if (SPEL.tableWrapper !== null && !tableIsOpen) {
+                Table.insertWrapper();
+            }
+            if (!tableIsOpen) {
+                Table.toggleTableVis();
+            }
         };
         var outListener = function(event) {
             var clickedElement = event.relatedTarget;
@@ -225,6 +234,7 @@ var SlickerPicker = function(linkedInput, options) {
                 setFocusedDay(event.currentTarget);
                 Dates.set.day = day;
                 linkedInput.value = getSetDate().toLocaleDateString();
+                window.setTimeout(function() {toggleTableVis(true);}, 500);
             };
 
             if (typeof day === 'number') {
@@ -347,7 +357,7 @@ var SlickerPicker = function(linkedInput, options) {
             };
             valueBox = setStyle(valueBox, valueBoxStyles);
 
-            ValueEl[type] = valueBox;
+            SPEL.value[type] = valueBox;
 
             setValueText(type);
 
@@ -369,7 +379,7 @@ var SlickerPicker = function(linkedInput, options) {
             var wrapperStyles = {
                 display: 'inline-block',
                 position: 'absolute',
-                top: 0,
+                top: window.getComputedStyle(linkedInput).getPropertyValue('height'),
                 left: 0
             };
 
@@ -384,26 +394,28 @@ var SlickerPicker = function(linkedInput, options) {
             wrapper.appendChild(getValueWrapper());
             wrapper.appendChild(getValueWrapper(true));
             parentNode.insertBefore(wrapper, linkedInput.nextSibling);
-            openTableWrapper = wrapper;
+            SPEL.tableWrapper = wrapper;
+            tableIsOpen = true;
             insertTable();
-            focusCurrentDay();
         }
 
         function insertTable() {
-            if (openTable !== null) {
-                openTable.remove();
+            if (SPEL.table !== null) {
+                SPEL.table.remove();
             }
-            var wrapper = openTableWrapper;
+            var wrapper = SPEL.tableWrapper;
             var monthInfo = getMonthInfo(Dates.set.month, Dates.set.year),
                 table = getTable(monthInfo.days, monthInfo.dayShift);
             wrapper.appendChild(table);
             focusCurrentDay();
-            openTable = table;
+            SPEL.table = table;
         }
 
         function toggleTableVis(off) {
-            if (openTableWrapper !== null) {
-                openTableWrapper.hidden = !!off;
+            if (SPEL.tableWrapper !== null) {
+                SPEL.tableWrapper.hidden = !!off;
+                SPEL.tableWrapper.style.display = ['inline-block', 'none'][!!off * 1];
+                tableIsOpen = !off;
             }
         }
 
@@ -418,7 +430,7 @@ var SlickerPicker = function(linkedInput, options) {
             if (type === 'month') {
                 text = Words.month[lang][Dates.set.month];
             }
-            ValueEl[type].textContent = text;
+            SPEL.value[type].textContent = text;
         }
 
         function focusCurrentDay() {
@@ -464,7 +476,8 @@ var SlickerPicker = function(linkedInput, options) {
         return {
             insertWrapper: insertWrapper,
             resetCalender: resetCalender,
-            insertHiddenInput: insertHiddenInput
+            insertHiddenInput: insertHiddenInput,
+            toggleTableVis: toggleTableVis
         };
     }());
 
@@ -477,7 +490,7 @@ var SlickerPicker = function(linkedInput, options) {
 
         Table.insertHiddenInput();
 
-        // Input.listenIn();
+        Input.listenIn();
         // Input.listenOut();
 
     }
