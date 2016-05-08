@@ -58,7 +58,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'js', // Custom folder
           src: ['**/*.jsx'],
-          dest: 'dist/js/configbuilder/', // Custom folder
+          dest: 'dist/js/', // Custom folder
           ext: '.js'
         }]
       }
