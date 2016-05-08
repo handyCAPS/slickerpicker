@@ -1,0 +1,19 @@
+{
+  "name": "SlickerPicker Config Builder",
+  "version": "1.0.0",
+  "authors": [
+    "Tim Doppenberg"
+  ],
+  "description": "",
+  "main": "configbuilder.html",
+  "keywords": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "foundation-sites": "~6.2.1"
+  }
+}

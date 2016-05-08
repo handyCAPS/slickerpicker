@@ -48,6 +48,26 @@ module.exports = function(grunt) {
         src: [ 'js/**/*.min.js']
       }
     },
+    babel: {
+      options: {
+        plugins: ['transform-react-jsx'],
+        presets: ['es2015', 'react']
+      },
+      jsx: {
+        files: [{
+          expand: true,
+          cwd: 'js', // Custom folder
+          src: ['**/*.jsx'],
+          dest: 'dist/js/configbuilder/', // Custom folder
+          ext: '.js'
+        }]
+      }
+    },
+    wiredep: {
+      configbuilder: {
+        src: ['configbuilder.html']
+      }
+    },
     watch: {
       options: {
         livereload: true
@@ -57,8 +77,12 @@ module.exports = function(grunt) {
         tasks: ['jshint:gruntfile']
       },
       js: {
-        files: [ 'js/**/*.js'],
+        files: ['js/**/*.js'],
         tasks: ['jshint']
+      },
+      jsx: {
+        files: ['js/**/*.jsx'],
+        tasks: ['babel']
       },
       html: {
         files: ['**/*.html']
