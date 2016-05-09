@@ -63,9 +63,18 @@ module.exports = function(grunt) {
         }]
       }
     },
-    wiredep: {
+    sass: {
       configbuilder: {
-        src: ['configbuilder.html']
+        options: {
+          style: 'expanded'
+        },
+        files: [{
+          expand: true,
+          cwd: 'scss',
+          src: '**/*.scss',
+          dest: 'dist/css/buildconfig',
+          ext: '.css'
+        }]
       }
     },
     watch: {
@@ -88,7 +97,11 @@ module.exports = function(grunt) {
         files: ['**/*.html']
       },
       css: {
-        files: ['**/*.css']
+        files: ['*.css']
+      },
+      scss: {
+        files: 'scss/**/*.scss',
+        tasks: ['sass']
       }
     }
   });
