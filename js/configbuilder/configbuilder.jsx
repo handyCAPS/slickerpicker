@@ -1,3 +1,7 @@
+
+import configOptions from './configoptions';
+
+
 var Card = React.createClass({
     render: function() {
         var headerStyle = {

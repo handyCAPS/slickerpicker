@@ -63,6 +63,12 @@ module.exports = function(grunt) {
         }]
       }
     },
+    browserify: {
+      all: {
+        src: 'dist/js/configbuilder/**/*.js',
+        dest: 'dist/js/bundle.js'
+      }
+    },
     sass: {
       configbuilder: {
         options: {
@@ -92,6 +98,10 @@ module.exports = function(grunt) {
       jsx: {
         files: ['js/**/*.jsx'],
         tasks: ['babel']
+      },
+      bundle: {
+        files: 'dist/js/configbuilder/**/*.js',
+        tasks: ['browserify']
       },
       html: {
         files: ['**/*.html']
