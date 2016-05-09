@@ -2,20 +2,48 @@
 import configOptions from './configoptions';
 
 
-var Card = React.createClass({
+let InputGroup = React.createClass({
+    getInitialState: function() {
+        return {
+            inputValue: ''
+        };
+    },
     render: function() {
-        var headerStyle = {
+        let inputName = this.props.inputname;
+        return (
+                <p className='input-group wrap'>
+                    <label className='input-group__label' htmlFor={inputName}>{inputName[0].toUpperCase() + inputName.slice(1)}</label>
+                    <input className='input-group__input' name={inputName} value={this.state.inputValue} />
+                </p>
+            );
+    }
+});
+
+let Card = React.createClass({
+    render: function() {
+        let headerStyle = {
             textTransform: 'capitalize'
         };
+        let inputName = 'todo',
+            inputArr = [];
+
+        for (let type in this.props.inputTypes) {
+            inputArr.push(type);
+        }
+
         return (
-                <div className='large-6 columns'>
+                <div className='card'>
                     <h2 style={headerStyle}>{this.props.configType}</h2>
+                    {inputArr.map(function(type) {
+                        if (type !== '') { inputName = type; }
+                        return (<InputGroup inputname={inputName} />);
+                    })}
                 </div>
             );
     }
 });
 
-var ResultCode = React.createClass({
+let ResultCode = React.createClass({
     getInitialState: function() {
         return {
             configCodeArray: ["// some code ...", "// some other code ..."]
@@ -32,19 +60,51 @@ var ResultCode = React.createClass({
     },
     render: function() {
         return (
-                <div className='large-12 columns'>
-                    <pre className='codepen language-javascript'>
+                <section className='codepen'>
+                    <h3>Your config code:</h3>
+                    <pre className='language-javascript'>
                     <code className='javascript language-javascript'>
                         {this.buildCodeString()}
                     </code>
                     </pre>
+                </section>
+            );
+    }
+});
+
+var CardBoard = React.createClass({
+    getInitialState: function() {
+        let stateOb = {};
+        stateOb.optionsArray = [];
+        for (let option in configOptions) {
+            stateOb.optionsArray.push(option);
+        }
+        stateOb.optionsObject = configOptions;
+        return stateOb;
+    },
+    allCards: function() {
+
+    },
+    render: function() {
+        let self = this;
+        return (
+                <div className='cardWrap'>
+                    {this.state.optionsArray.map(function(option) {
+                        let inputTypes = {};
+                        if (this.state.optionsObject[option]) {
+                            inputTypes = this.state.optionsObject[option];
+                        }
+                        return (
+                                <Card configType={option} inputTypes={inputTypes} />
+                            );
+                    }.bind(this))}
                 </div>
             );
     }
 });
 
-ReactDOM.render(<div>
-            <Card configType='classes'></Card>
-            <ResultCode />
+ReactDOM.render(<div className=''>
+                <CardBoard />
+                <ResultCode />
             </div>
             , document.getElementById('reactContainer'));

@@ -1,7 +1,14 @@
 let configOptions = {
     classes: {
-        base: ''
-    }
+        base: '',
+        wrapper: '',
+        yearWrapper: ''
+    },
+    colors: {
+        backgroundColor: ''
+    },
+    events: {},
+    language: {}
 };
 
 export default configOptions;
