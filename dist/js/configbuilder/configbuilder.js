@@ -31,8 +31,7 @@ var Card = React.createClass({
         var headerStyle = {
             textTransform: 'capitalize'
         };
-        var inputName = 'todo',
-            inputArr = [];
+        var inputArr = [];
 
         for (var type in this.props.inputTypes) {
             inputArr.push(type);
@@ -47,10 +46,7 @@ var Card = React.createClass({
                 this.props.configType
             ),
             inputArr.map(function (type) {
-                if (type !== '') {
-                    inputName = type;
-                }
-                return React.createElement(InputGroup, { inputname: inputName });
+                return React.createElement(InputGroup, { inputname: type });
             })
         );
     }
@@ -101,7 +97,6 @@ var CardBoard = React.createClass({
             inputTypes: this.props.optionsObject[option] });
     },
     render: function render() {
-        var self = this;
         return React.createElement(
             'div',
             { className: 'cardWrap' },
@@ -126,7 +121,9 @@ var Parent = React.createClass({
         return React.createElement(
             'div',
             null,
-            React.createElement(CardBoard, { optionsArray: this.state.optionsArray, optionsObject: this.state.optionsObject }),
+            React.createElement(CardBoard, {
+                optionsArray: this.state.optionsArray,
+                optionsObject: this.state.optionsObject }),
             React.createElement(ResultCode, null)
         );
     }

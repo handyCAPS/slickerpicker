@@ -19,8 +19,7 @@ let Card = React.createClass({
         let headerStyle = {
             textTransform: 'capitalize'
         };
-        let inputName = 'todo',
-            inputArr = [];
+        let inputArr = [];
 
         for (let type in this.props.inputTypes) {
             inputArr.push(type);
@@ -30,8 +29,7 @@ let Card = React.createClass({
                 <div className='card'>
                     <h2 style={headerStyle}>{this.props.configType}</h2>
                     {inputArr.map(function(type) {
-                        if (type !== '') { inputName = type; }
-                        return (<InputGroup inputname={inputName} />);
+                        return (<InputGroup inputname={type} />);
                     })}
                 </div>
             );
@@ -67,7 +65,7 @@ let ResultCode = React.createClass({
     }
 });
 
-var CardBoard = React.createClass({
+let CardBoard = React.createClass({
     allCards: function(option, i) {
         return (
                 <Card
@@ -77,7 +75,6 @@ var CardBoard = React.createClass({
             );
     },
     render: function() {
-        let self = this;
         return (
                 <div className='cardWrap'>
                     {this.props.optionsArray.map(this.allCards.bind(this))}
@@ -99,7 +96,9 @@ let Parent = React.createClass({
     render: function() {
         return (
                 <div>
-                    <CardBoard optionsArray={this.state.optionsArray} optionsObject={this.state.optionsObject} />
+                    <CardBoard
+                        optionsArray={this.state.optionsArray}
+                        optionsObject={this.state.optionsObject} />
                     <ResultCode />
                 </div>
             );
