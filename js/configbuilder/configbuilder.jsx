@@ -15,7 +15,7 @@ var ResultCode = React.createClass({
     getInitialState: function() {
         return {
             configCodeOpen: "var config = {",
-            configCodeArray: ["// some code ...", "// some toher code ..."],
+            configCodeArray: ["// some code ...", "// some other code ..."],
             configCodeClose: "};"
         };
     },

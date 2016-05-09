@@ -166,6 +166,8 @@ var SlickerPicker = function(linkedInput, options) {
         return resultOb;
     }
 
+    // do stuff 
+
     function getMonthInfo(month, year) {
         return {
             dayShift: new Date(year, month, 1).getDay(),

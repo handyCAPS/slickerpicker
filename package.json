@@ -15,7 +15,6 @@
     "grunt-contrib-uglify": "~0.5.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-react": "^0.12.3",
-    "grunt-wiredep": "^3.0.1",
     "load-grunt-tasks": "~0.6.0"
   }
 }
