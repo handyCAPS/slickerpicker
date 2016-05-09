@@ -3,17 +3,12 @@ import configOptions from './configoptions';
 
 
 let InputGroup = React.createClass({
-    getInitialState: function() {
-        return {
-            inputValue: ''
-        };
-    },
     render: function() {
         let inputName = this.props.inputname;
         return (
                 <p className='input-group wrap'>
                     <label className='input-group__label' htmlFor={inputName}>{inputName[0].toUpperCase() + inputName.slice(1)}</label>
-                    <input className='input-group__input' name={inputName} value={this.state.inputValue} />
+                    <input className='input-group__input' name={inputName} />
                 </p>
             );
     }
@@ -73,6 +68,25 @@ let ResultCode = React.createClass({
 });
 
 var CardBoard = React.createClass({
+    allCards: function(option, i) {
+        return (
+                <Card
+                    key={i}
+                    configType={option}
+                    inputTypes={this.props.optionsObject[option]} />
+            );
+    },
+    render: function() {
+        let self = this;
+        return (
+                <div className='cardWrap'>
+                    {this.props.optionsArray.map(this.allCards.bind(this))}
+                </div>
+            );
+    }
+});
+
+let Parent = React.createClass({
     getInitialState: function() {
         let stateOb = {};
         stateOb.optionsArray = [];
@@ -82,29 +96,14 @@ var CardBoard = React.createClass({
         stateOb.optionsObject = configOptions;
         return stateOb;
     },
-    allCards: function() {
-
-    },
     render: function() {
-        let self = this;
         return (
-                <div className='cardWrap'>
-                    {this.state.optionsArray.map(function(option) {
-                        let inputTypes = {};
-                        if (this.state.optionsObject[option]) {
-                            inputTypes = this.state.optionsObject[option];
-                        }
-                        return (
-                                <Card configType={option} inputTypes={inputTypes} />
-                            );
-                    }.bind(this))}
+                <div>
+                    <CardBoard optionsArray={this.state.optionsArray} optionsObject={this.state.optionsObject} />
+                    <ResultCode />
                 </div>
             );
     }
 });
 
-ReactDOM.render(<div className=''>
-                <CardBoard />
-                <ResultCode />
-            </div>
-            , document.getElementById('reactContainer'));
+ReactDOM.render(<Parent />, document.getElementById('reactContainer'));

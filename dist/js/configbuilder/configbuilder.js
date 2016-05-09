@@ -9,11 +9,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var InputGroup = React.createClass({
     displayName: 'InputGroup',
 
-    getInitialState: function getInitialState() {
-        return {
-            inputValue: ''
-        };
-    },
     render: function render() {
         var inputName = this.props.inputname;
         return React.createElement(
@@ -24,7 +19,7 @@ var InputGroup = React.createClass({
                 { className: 'input-group__label', htmlFor: inputName },
                 inputName[0].toUpperCase() + inputName.slice(1)
             ),
-            React.createElement('input', { className: 'input-group__input', name: inputName, value: this.state.inputValue })
+            React.createElement('input', { className: 'input-group__input', name: inputName })
         );
     }
 });
@@ -99,6 +94,25 @@ var ResultCode = React.createClass({
 var CardBoard = React.createClass({
     displayName: 'CardBoard',
 
+    allCards: function allCards(option, i) {
+        return React.createElement(Card, {
+            key: i,
+            configType: option,
+            inputTypes: this.props.optionsObject[option] });
+    },
+    render: function render() {
+        var self = this;
+        return React.createElement(
+            'div',
+            { className: 'cardWrap' },
+            this.props.optionsArray.map(this.allCards.bind(this))
+        );
+    }
+});
+
+var Parent = React.createClass({
+    displayName: 'Parent',
+
     getInitialState: function getInitialState() {
         var stateOb = {};
         stateOb.optionsArray = [];
@@ -108,26 +122,14 @@ var CardBoard = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
-    allCards: function allCards() {},
     render: function render() {
-        var self = this;
         return React.createElement(
             'div',
-            { className: 'cardWrap' },
-            this.state.optionsArray.map(function (option) {
-                var inputTypes = {};
-                if (this.state.optionsObject[option]) {
-                    inputTypes = this.state.optionsObject[option];
-                }
-                return React.createElement(Card, { configType: option, inputTypes: inputTypes });
-            }.bind(this))
+            null,
+            React.createElement(CardBoard, { optionsArray: this.state.optionsArray, optionsObject: this.state.optionsObject }),
+            React.createElement(ResultCode, null)
         );
     }
 });
 
-ReactDOM.render(React.createElement(
-    'div',
-    { className: '' },
-    React.createElement(CardBoard, null),
-    React.createElement(ResultCode, null)
-), document.getElementById('reactContainer'));
+ReactDOM.render(React.createElement(Parent, null), document.getElementById('reactContainer'));

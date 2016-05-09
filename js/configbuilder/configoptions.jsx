@@ -1,4 +1,4 @@
-let configOptions = {
+const configOptions = {
     classes: {
         base: '',
         wrapper: '',
