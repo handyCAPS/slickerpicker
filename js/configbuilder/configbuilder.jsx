@@ -14,22 +14,25 @@ var Card = React.createClass({
 var ResultCode = React.createClass({
     getInitialState: function() {
         return {
-            configCodeOpen: "var config = {",
-            configCodeArray: ["// some code ...", "// some other code ..."],
-            configCodeClose: "};"
+            configCodeArray: ["// some code ...", "// some other code ..."]
         };
+    },
+    buildCodeString: function() {
+        return "var config = {\n" +
+            this.state.configCodeArray
+                .map(function(v) {
+                    return "\t" + v;
+                })
+                .join('\n') +
+                "\n};"
     },
     render: function() {
         return (
                 <div className='large-12 columns'>
                     <pre className='codepen language-javascript'>
-                        {this.state.configCodeOpen}<br />
-                        {this.state.configCodeArray
-                            .map(function(v) {
-                                return "\t" + v;
-                            })
-                            .join('\n')}<br />
-                        {this.state.configCodeClose}
+                    <code className='javascript language-javascript'>
+                        {this.buildCodeString()}
+                    </code>
                     </pre>
                 </div>
             );

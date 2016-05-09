@@ -24,10 +24,13 @@ var ResultCode = React.createClass({
 
     getInitialState: function getInitialState() {
         return {
-            configCodeOpen: "var config = {",
-            configCodeArray: ["// some code ...", "// some other code ..."],
-            configCodeClose: "};"
+            configCodeArray: ["// some code ...", "// some other code ..."]
         };
+    },
+    buildCodeString: function buildCodeString() {
+        return "var config = {\n" + this.state.configCodeArray.map(function (v) {
+            return "\t" + v;
+        }).join('\n') + "\n};";
     },
     render: function render() {
         return React.createElement(
@@ -36,13 +39,11 @@ var ResultCode = React.createClass({
             React.createElement(
                 'pre',
                 { className: 'codepen language-javascript' },
-                this.state.configCodeOpen,
-                React.createElement('br', null),
-                this.state.configCodeArray.map(function (v) {
-                    return "\t" + v;
-                }).join('\n'),
-                React.createElement('br', null),
-                this.state.configCodeClose
+                React.createElement(
+                    'code',
+                    { className: 'javascript language-javascript' },
+                    this.buildCodeString()
+                )
             )
         );
     }
