@@ -83,6 +83,14 @@ module.exports = function(grunt) {
         }]
       }
     },
+    postcss: {
+      options: {
+          proseccors: [require('autoprefixer')({browsers: 'last 2 versions'})]
+        },        
+        dist: {
+          src: 'dist/css/**/*.css'
+        }
+    },
     watch: {
       options: {
         livereload: true
@@ -111,7 +119,7 @@ module.exports = function(grunt) {
       },
       scss: {
         files: 'scss/**/*.scss',
-        tasks: ['sass']
+        tasks: ['sass', 'postcss']
       }
     }
   });

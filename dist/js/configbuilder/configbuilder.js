@@ -11,6 +11,10 @@ var InputGroup = React.createClass({
 
     render: function render() {
         var inputName = this.props.inputname;
+        var inputEl = React.createElement('input', { className: 'input-group__input', name: inputName });
+        if (this.props.textArea === true) {
+            inputEl = React.createElement('textarea', { className: 'input-group__input input-group__input--textarea', name: inputName });
+        }
         return React.createElement(
             'p',
             { className: 'input-group wrap' },
@@ -19,7 +23,7 @@ var InputGroup = React.createClass({
                 { className: 'input-group__label', htmlFor: inputName },
                 inputName[0].toUpperCase() + inputName.slice(1)
             ),
-            React.createElement('input', { className: 'input-group__input', name: inputName })
+            inputEl
         );
     }
 });
@@ -46,8 +50,9 @@ var Card = React.createClass({
                 this.props.configType
             ),
             inputArr.map(function (type) {
-                return React.createElement(InputGroup, { inputname: type });
-            })
+                var textArea = typeof this.props.inputTypes[type] === 'function';
+                return React.createElement(InputGroup, { inputname: type, textArea: textArea });
+            }.bind(this))
         );
     }
 });
@@ -94,6 +99,7 @@ var CardBoard = React.createClass({
         return React.createElement(Card, {
             key: i,
             configType: option,
+            optionsObject: this.props.optionsObject,
             inputTypes: this.props.optionsObject[option] });
     },
     render: function render() {

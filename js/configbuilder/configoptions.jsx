@@ -7,7 +7,9 @@ const configOptions = {
     colors: {
         backgroundColor: ''
     },
-    events: {},
+    events: {
+        onInit: function() {}
+    },
     language: {}
 };
 

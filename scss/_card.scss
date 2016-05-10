@@ -34,9 +34,14 @@
     text-align: right;
     padding: 0 1em;
     vertical-align: middle;
+        & ~ textarea {
+            vertical-align: top
+        }
 }
 
 .input-group__input {
     width: 65%;
     vertical-align: middle;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
 }

@@ -5,10 +5,16 @@ import configOptions from './configoptions';
 let InputGroup = React.createClass({
     render: function() {
         let inputName = this.props.inputname;
+        let inputEl = (<input className='input-group__input' name={inputName} />);
+        if (this.props.textArea === true) {
+            inputEl = (
+                    <textarea className='input-group__input input-group__input--textarea' name={inputName} />
+                );
+        }
         return (
                 <p className='input-group wrap'>
                     <label className='input-group__label' htmlFor={inputName}>{inputName[0].toUpperCase() + inputName.slice(1)}</label>
-                    <input className='input-group__input' name={inputName} />
+                    {inputEl}
                 </p>
             );
     }
@@ -29,8 +35,9 @@ let Card = React.createClass({
                 <div className='card'>
                     <h2 style={headerStyle}>{this.props.configType}</h2>
                     {inputArr.map(function(type) {
-                        return (<InputGroup inputname={type} />);
-                    })}
+                        let textArea = typeof this.props.inputTypes[type] === 'function';
+                        return (<InputGroup inputname={type} textArea={textArea} />);
+                    }.bind(this))}
                 </div>
             );
     }
@@ -71,6 +78,7 @@ let CardBoard = React.createClass({
                 <Card
                     key={i}
                     configType={option}
+                    optionsObject={this.props.optionsObject}
                     inputTypes={this.props.optionsObject[option]} />
             );
     },
