@@ -3,12 +3,16 @@ import configOptions from './configoptions';
 
 
 let InputGroup = React.createClass({
+    update: function() {
+        console.log('Changing ...');
+        this.state.onChange();
+    },
     render: function() {
         let inputName = this.props.inputname;
         let inputEl = (<input className='input-group__input' name={inputName} />);
         if (this.props.textArea === true) {
             inputEl = (
-                    <textarea className='input-group__input input-group__input--textarea' name={inputName} />
+                    <textarea onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} />
                 );
         }
         return (
@@ -101,10 +105,14 @@ let Parent = React.createClass({
         stateOb.optionsObject = configOptions;
         return stateOb;
     },
+    handleUpdate: function() {
+        alert('yes');
+    },
     render: function() {
         return (
                 <div>
                     <CardBoard
+                        onChange={this.handleUpdate}
                         optionsArray={this.state.optionsArray}
                         optionsObject={this.state.optionsObject} />
                     <ResultCode />

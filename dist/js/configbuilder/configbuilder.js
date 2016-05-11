@@ -9,11 +9,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var InputGroup = React.createClass({
     displayName: 'InputGroup',
 
+    update: function update() {
+        console.log('Changing ...');
+        this.state.onChange();
+    },
     render: function render() {
         var inputName = this.props.inputname;
         var inputEl = React.createElement('input', { className: 'input-group__input', name: inputName });
         if (this.props.textArea === true) {
-            inputEl = React.createElement('textarea', { className: 'input-group__input input-group__input--textarea', name: inputName });
+            inputEl = React.createElement('textarea', { onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName });
         }
         return React.createElement(
             'p',
@@ -123,11 +127,15 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
+    handleUpdate: function handleUpdate() {
+        alert('yes');
+    },
     render: function render() {
         return React.createElement(
             'div',
             null,
             React.createElement(CardBoard, {
+                onChange: this.handleUpdate,
                 optionsArray: this.state.optionsArray,
                 optionsObject: this.state.optionsObject }),
             React.createElement(ResultCode, null)

@@ -24,8 +24,7 @@
 .input-group {
     width: 100%;
     margin: 0;
-    padding: modScale(-2) + em modScale(-1) + em;
-    // border: 1px solid lightgrey;
+    margin-bottom: modScale(-1) + em;
 }
 
 .input-group__label {
