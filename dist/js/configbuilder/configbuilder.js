@@ -11,11 +11,11 @@ var InputGroup = React.createClass({
 
     update: function update() {
         console.log('Changing ...');
-        this.state.onChange();
+        // this.state.onChange();
     },
     render: function render() {
         var inputName = this.props.inputname;
-        var inputEl = React.createElement('input', { className: 'input-group__input', name: inputName });
+        var inputEl = React.createElement('input', { onChange: this.update, className: 'input-group__input', name: inputName });
         if (this.props.textArea === true) {
             inputEl = React.createElement('textarea', { onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName });
         }
@@ -75,6 +75,7 @@ var ResultCode = React.createClass({
         }).join('\n') + "\n};";
     },
     render: function render() {
+        console.log(this.state);
         return React.createElement(
             'section',
             { className: 'codepen' },
@@ -106,10 +107,13 @@ var CardBoard = React.createClass({
             optionsObject: this.props.optionsObject,
             inputTypes: this.props.optionsObject[option] });
     },
+    handleChange: function handleChange() {
+        console.log("changing cardboard", arguments);
+    },
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'cardWrap' },
+            { className: 'cardWrap', onChange: this.handleChange },
             this.props.optionsArray.map(this.allCards.bind(this))
         );
     }
@@ -133,9 +137,8 @@ var Parent = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            null,
+            { onChange: this.handleUpdate },
             React.createElement(CardBoard, {
-                onChange: this.handleUpdate,
                 optionsArray: this.state.optionsArray,
                 optionsObject: this.state.optionsObject }),
             React.createElement(ResultCode, null)

@@ -5,11 +5,11 @@ import configOptions from './configoptions';
 let InputGroup = React.createClass({
     update: function() {
         console.log('Changing ...');
-        this.state.onChange();
+        // this.state.onChange();
     },
     render: function() {
         let inputName = this.props.inputname;
-        let inputEl = (<input className='input-group__input' name={inputName} />);
+        let inputEl = (<input onChange={this.update} className='input-group__input' name={inputName} />);
         if (this.props.textArea === true) {
             inputEl = (
                     <textarea onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} />
@@ -63,6 +63,7 @@ let ResultCode = React.createClass({
                 "\n};"
     },
     render: function() {
+        console.log(this.state);
         return (
                 <section className='codepen'>
                     <h3>Your config code:</h3>
@@ -86,9 +87,12 @@ let CardBoard = React.createClass({
                     inputTypes={this.props.optionsObject[option]} />
             );
     },
+    handleChange: function() {
+        console.log("changing cardboard", arguments);
+    },
     render: function() {
         return (
-                <div className='cardWrap'>
+                <div className='cardWrap' onChange={this.handleChange}>
                     {this.props.optionsArray.map(this.allCards.bind(this))}
                 </div>
             );
@@ -110,9 +114,8 @@ let Parent = React.createClass({
     },
     render: function() {
         return (
-                <div>
+                <div  onChange={this.handleUpdate}>
                     <CardBoard
-                        onChange={this.handleUpdate}
                         optionsArray={this.state.optionsArray}
                         optionsObject={this.state.optionsObject} />
                     <ResultCode />
