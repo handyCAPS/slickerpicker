@@ -4,11 +4,11 @@ const configOptions = {
         wrapper: '',
         yearWrapper: ''
     },
-    colors: {
-        backgroundColor: ''
-    },
     events: {
         onInit: function() {}
+    },
+    colors: {
+        backgroundColor: ''
     },
     language: {}
 };

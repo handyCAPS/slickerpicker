@@ -4,7 +4,6 @@ import configOptions from './configoptions';
 
 let InputGroup = React.createClass({
     update: function() {
-        console.log('Changing ...');
         // this.state.onChange();
     },
     render: function() {
@@ -12,7 +11,7 @@ let InputGroup = React.createClass({
         let inputEl = (<input onChange={this.update} className='input-group__input' name={inputName} />);
         if (this.props.textArea === true) {
             inputEl = (
-                    <textarea onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} />
+                    <textarea placeholder='function() {}' onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} />
                 );
         }
         return (
@@ -47,36 +46,6 @@ let Card = React.createClass({
     }
 });
 
-let ResultCode = React.createClass({
-    getInitialState: function() {
-        return {
-            configCodeArray: ["// some code ...", "// some other code ..."]
-        };
-    },
-    buildCodeString: function() {
-        return "var config = {\n" +
-            this.state.configCodeArray
-                .map(function(v) {
-                    return "\t" + v;
-                })
-                .join('\n') +
-                "\n};"
-    },
-    render: function() {
-        console.log(this.state);
-        return (
-                <section className='codepen'>
-                    <h3>Your config code:</h3>
-                    <pre className='language-javascript'>
-                    <code className='javascript language-javascript'>
-                        {this.buildCodeString()}
-                    </code>
-                    </pre>
-                </section>
-            );
-    }
-});
-
 let CardBoard = React.createClass({
     allCards: function(option, i) {
         return (
@@ -99,6 +68,36 @@ let CardBoard = React.createClass({
     }
 });
 
+let ResultCode = React.createClass({
+    getInitialState: function() {
+        return {
+            configCodeArray: ["// some code ...", "// some other code ..."]
+        };
+    },
+    buildCodeString: function() {
+        return "var config = {\n" +
+            this.state.configCodeArray
+                .map(function(v) {
+                    return "\t" + v;
+                })
+                .join('\n') +
+                "\n};"
+    },
+    render: function() {
+        return (
+                <section className='codepen'>
+                    <h3>Your config code:</h3>
+                    <pre className='language-javascript'>
+                    <code className='javascript language-javascript'>
+                        {this.buildCodeString()}
+                    </code>
+                    </pre>
+                </section>
+            );
+    }
+});
+
+
 let Parent = React.createClass({
     getInitialState: function() {
         let stateOb = {};
@@ -110,7 +109,7 @@ let Parent = React.createClass({
         return stateOb;
     },
     handleUpdate: function() {
-        alert('yes');
+
     },
     render: function() {
         return (

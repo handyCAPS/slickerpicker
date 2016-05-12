@@ -10,14 +10,13 @@ var InputGroup = React.createClass({
     displayName: 'InputGroup',
 
     update: function update() {
-        console.log('Changing ...');
         // this.state.onChange();
     },
     render: function render() {
         var inputName = this.props.inputname;
         var inputEl = React.createElement('input', { onChange: this.update, className: 'input-group__input', name: inputName });
         if (this.props.textArea === true) {
-            inputEl = React.createElement('textarea', { onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName });
+            inputEl = React.createElement('textarea', { placeholder: 'function() {}', onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName });
         }
         return React.createElement(
             'p',
@@ -61,42 +60,6 @@ var Card = React.createClass({
     }
 });
 
-var ResultCode = React.createClass({
-    displayName: 'ResultCode',
-
-    getInitialState: function getInitialState() {
-        return {
-            configCodeArray: ["// some code ...", "// some other code ..."]
-        };
-    },
-    buildCodeString: function buildCodeString() {
-        return "var config = {\n" + this.state.configCodeArray.map(function (v) {
-            return "\t" + v;
-        }).join('\n') + "\n};";
-    },
-    render: function render() {
-        console.log(this.state);
-        return React.createElement(
-            'section',
-            { className: 'codepen' },
-            React.createElement(
-                'h3',
-                null,
-                'Your config code:'
-            ),
-            React.createElement(
-                'pre',
-                { className: 'language-javascript' },
-                React.createElement(
-                    'code',
-                    { className: 'javascript language-javascript' },
-                    this.buildCodeString()
-                )
-            )
-        );
-    }
-});
-
 var CardBoard = React.createClass({
     displayName: 'CardBoard',
 
@@ -119,6 +82,41 @@ var CardBoard = React.createClass({
     }
 });
 
+var ResultCode = React.createClass({
+    displayName: 'ResultCode',
+
+    getInitialState: function getInitialState() {
+        return {
+            configCodeArray: ["// some code ...", "// some other code ..."]
+        };
+    },
+    buildCodeString: function buildCodeString() {
+        return "var config = {\n" + this.state.configCodeArray.map(function (v) {
+            return "\t" + v;
+        }).join('\n') + "\n};";
+    },
+    render: function render() {
+        return React.createElement(
+            'section',
+            { className: 'codepen' },
+            React.createElement(
+                'h3',
+                null,
+                'Your config code:'
+            ),
+            React.createElement(
+                'pre',
+                { className: 'language-javascript' },
+                React.createElement(
+                    'code',
+                    { className: 'javascript language-javascript' },
+                    this.buildCodeString()
+                )
+            )
+        );
+    }
+});
+
 var Parent = React.createClass({
     displayName: 'Parent',
 
@@ -131,9 +129,7 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
-    handleUpdate: function handleUpdate() {
-        alert('yes');
-    },
+    handleUpdate: function handleUpdate() {},
     render: function render() {
         return React.createElement(
             'div',
