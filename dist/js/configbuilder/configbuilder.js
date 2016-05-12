@@ -9,14 +9,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var InputGroup = React.createClass({
     displayName: 'InputGroup',
 
-    update: function update() {
-        // this.state.onChange();
+    getInitialState: function getInitialState() {
+        return {
+            areaFunction: "function() {\n    \n}"
+        };
+    },
+    update: function update(event) {
+        this.setState({
+            areaFunction: event.target.value
+        });
+        // this.props.onChange();
     },
     render: function render() {
         var inputName = this.props.inputname;
         var inputEl = React.createElement('input', { onChange: this.update, className: 'input-group__input', name: inputName });
         if (this.props.textArea === true) {
-            inputEl = React.createElement('textarea', { placeholder: 'function() {}', onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName });
+            inputEl = React.createElement(
+                'textarea',
+                { onChange: this.update, className: 'input-group__input input-group__input--textarea', name: inputName },
+                this.state.areaFunction
+            );
         }
         return React.createElement(
             'p',
@@ -92,7 +104,7 @@ var ResultCode = React.createClass({
     },
     buildCodeString: function buildCodeString() {
         return "var config = {\n" + this.state.configCodeArray.map(function (v) {
-            return "\t" + v;
+            return "    " + v;
         }).join('\n') + "\n};";
     },
     render: function render() {

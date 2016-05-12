@@ -3,15 +3,25 @@ import configOptions from './configoptions';
 
 
 let InputGroup = React.createClass({
-    update: function() {
-        // this.state.onChange();
+    getInitialState: function() {
+        return {
+            areaFunction: "function() {\n    \n}"
+        };
+    },
+    update: function(event) {
+        this.setState({
+            areaFunction: event.target.value
+        });
+        // this.props.onChange();
     },
     render: function() {
         let inputName = this.props.inputname;
         let inputEl = (<input onChange={this.update} className='input-group__input' name={inputName} />);
         if (this.props.textArea === true) {
             inputEl = (
-                    <textarea placeholder='function() {}' onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} />
+                    <textarea onChange={this.update} className='input-group__input input-group__input--textarea' name={inputName} >
+                        {this.state.areaFunction}
+                    </textarea>
                 );
         }
         return (
@@ -78,7 +88,7 @@ let ResultCode = React.createClass({
         return "var config = {\n" +
             this.state.configCodeArray
                 .map(function(v) {
-                    return "\t" + v;
+                    return "    " + v;
                 })
                 .join('\n') +
                 "\n};"
