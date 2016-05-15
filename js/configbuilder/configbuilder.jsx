@@ -12,7 +12,7 @@ let InputGroup = React.createClass({
         this.setState({
             areaFunction: event.target.value
         });
-        CardBoard.props.onChange().bind(null, 'testing');
+        // CardBoard.props.onChange().bind(null, 'testing');
     },
     render: function() {
         let inputName = this.props.inputname;
