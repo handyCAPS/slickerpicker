@@ -8,7 +8,13 @@ var _Events = require('./Events');
 
 var _Events2 = _interopRequireDefault(_Events);
 
+var _resultcode = require('./resultcode');
+
+var _resultcode2 = _interopRequireDefault(_resultcode);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = require('react');
 
 var InputGroup = React.createClass({
     displayName: 'InputGroup',
@@ -18,16 +24,19 @@ var InputGroup = React.createClass({
             areaFunction: "function() {\n    \n}"
         };
     },
-    update: function update(inputName, content) {
-        this.setState({
-            areaFunction: content
-        });
-        _Events2.default.publish('input/update', { inputName: inputName, content: content });
+    update: function update(event) {
+        var inputName = event.target.name,
+            content = event.target.value;
+        // this.setState({
+        //     areaFunction: event.target.value
+        // });
+        // console.log(event.target);
+        // Events.publish('input/update', {inputName, content});
         this.props.onChange({ inputName: inputName, content: content });
     },
     render: function render() {
         var inputName = this.props.inputname;
-        var onChangeCb = this.update.bind(null, inputName, this.props.children);
+        var onChangeCb = this.update;
 
         var inputEl = React.createElement('input', { onChange: onChangeCb, className: 'input-group__input', name: inputName });
 
@@ -59,8 +68,8 @@ var InputGroup = React.createClass({
 var Card = React.createClass({
     displayName: 'Card',
 
-    handleUpdate: function handleUpdate() {
-        this.props.onChange(arguments);
+    handleUpdate: function handleUpdate(ob) {
+        this.props.onChange(ob);
     },
     render: function render() {
         var headerStyle = {
@@ -80,9 +89,9 @@ var Card = React.createClass({
                 { style: headerStyle },
                 this.props.configType
             ),
-            inputArr.map(function (type) {
+            inputArr.map(function (type, i) {
                 var textArea = typeof this.props.inputTypes[type] === 'function';
-                return React.createElement(InputGroup, { inputname: type, textArea: textArea, onChange: this.handleUpdate });
+                return React.createElement(InputGroup, { key: i + type, inputname: type, textArea: textArea, onChange: this.handleUpdate });
             }.bind(this))
         );
     }
@@ -99,58 +108,14 @@ var CardBoard = React.createClass({
             optionsObject: this.props.optionsObject,
             inputTypes: this.props.optionsObject[option] });
     },
-    handleChange: function handleChange() {
-        this.props.onChange(arguments);
+    handleUpdate: function handleUpdate(ob) {
+        this.props.onChange(ob);
     },
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'cardWrap', onChange: this.handleChange },
-            this.props.optionsArray.map(this.allCards.bind(this))
-        );
-    }
-});
-
-var ResultCode = React.createClass({
-    displayName: 'ResultCode',
-
-    getInitialState: function getInitialState() {
-        return {
-            configCodeArray: [{ base: 'base' }, { onInit: 'function() {}' }]
-        };
-    },
-    buildCodeString: function buildCodeString() {
-        function mapCodeArray(v) {
-            var codeArray = [],
-                denom = "'";
-            for (var key in v) {
-                if (v[key].trim().indexOf('function') === 0) {
-                    denom = '';
-                }
-                codeArray.push('    ' + key + ": " + denom + v[key] + denom);
-            }
-            return codeArray.join("\n");
-        }
-        return "var config = {\n" + this.state.configCodeArray.map(mapCodeArray).join('\n') + "\n};";
-    },
-    render: function render() {
-        return React.createElement(
-            'section',
-            { className: 'codepen' },
-            React.createElement(
-                'h3',
-                null,
-                'Your config code:'
-            ),
-            React.createElement(
-                'pre',
-                { className: 'language-javascript' },
-                React.createElement(
-                    'code',
-                    { className: 'javascript language-javascript' },
-                    this.buildCodeString()
-                )
-            )
+            { className: 'cardWrap', onChange: this.handleUpdate },
+            this.props.optionsArray.map(this.allCards)
         );
     }
 });
@@ -167,8 +132,8 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
-    handleUpdate: function handleUpdate(event) {
-        console.log(event);
+    handleUpdate: function handleUpdate(ob) {
+        console.log('Object = ', ob);
     },
     render: function render() {
         return React.createElement(
@@ -178,11 +143,9 @@ var Parent = React.createClass({
                 onChange: this.handleUpdate,
                 optionsArray: this.state.optionsArray,
                 optionsObject: this.state.optionsObject }),
-            React.createElement(ResultCode, null)
+            React.createElement(_resultcode2.default, null)
         );
     }
 });
 
 ReactDOM.render(React.createElement(Parent, null), document.getElementById('reactContainer'));
-
-// Events.subscribe('input/update', function(ob) {console.log(ob.inputName)});

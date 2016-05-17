@@ -1,7 +1,11 @@
 
+const React = require('react');
+
 import configOptions from './configoptions';
 
 import Events from './Events';
+
+import ResultCode from './resultcode';
 
 
 let InputGroup = React.createClass({
@@ -10,16 +14,19 @@ let InputGroup = React.createClass({
             areaFunction: "function() {\n    \n}"
         };
     },
-    update: function(inputName, content) {
-        this.setState({
-            areaFunction: content
-        });
-        Events.publish('input/update', {inputName, content});
+    update: function(event) {
+        let inputName = event.target.name,
+            content = event.target.value;
+        // this.setState({
+        //     areaFunction: event.target.value
+        // });
+        // console.log(event.target);
+        // Events.publish('input/update', {inputName, content});
         this.props.onChange({inputName, content});
     },
     render: function() {
         let inputName = this.props.inputname;
-        let onChangeCb = this.update.bind(null, inputName, this.props.children);
+        let onChangeCb = this.update;
 
         let inputEl = (<input onChange={onChangeCb} className='input-group__input' name={inputName} />);
 
@@ -45,8 +52,8 @@ let InputGroup = React.createClass({
 });
 
 let Card = React.createClass({
-    handleUpdate: function() {
-        this.props.onChange(arguments);
+    handleUpdate: function(ob) {
+        this.props.onChange(ob);
     },
     render: function() {
         let headerStyle = {
@@ -61,9 +68,9 @@ let Card = React.createClass({
         return (
                 <div className='card'>
                     <h2 style={headerStyle}>{this.props.configType}</h2>
-                    {inputArr.map(function(type) {
+                    {inputArr.map(function(type, i) {
                         let textArea = typeof this.props.inputTypes[type] === 'function';
-                        return (<InputGroup inputname={type} textArea={textArea} onChange={this.handleUpdate} />);
+                        return (<InputGroup key={i + type} inputname={type} textArea={textArea} onChange={this.handleUpdate} />);
                     }.bind(this))}
                 </div>
             );
@@ -81,50 +88,14 @@ let CardBoard = React.createClass({
                     inputTypes={this.props.optionsObject[option]} />
             );
     },
-    handleChange: function() {
-        this.props.onChange(arguments);
+    handleUpdate: function(ob) {
+        this.props.onChange(ob);
     },
     render: function() {
         return (
-                <div className='cardWrap' onChange={this.handleChange}>
-                    {this.props.optionsArray.map(this.allCards.bind(this))}
+                <div className='cardWrap' onChange={this.handleUpdate}>
+                    {this.props.optionsArray.map(this.allCards)}
                 </div>
-            );
-    }
-});
-
-let ResultCode = React.createClass({
-    getInitialState: function() {
-        return {
-            configCodeArray: [{base: 'base'}, {onInit: 'function() {}'}]
-        };
-    },
-    buildCodeString: function() {
-        function mapCodeArray(v) {
-            let codeArray = [],
-                denom = "'";
-            for (let key in v) {
-                if (v[key].trim().indexOf('function') === 0) { denom = ''; }
-                codeArray.push('    ' + key + ": " + denom + v[key] + denom);
-            }
-            return codeArray.join("\n");
-        }
-        return "var config = {\n" +
-            this.state.configCodeArray
-                .map(mapCodeArray)
-                .join('\n') +
-                "\n};"
-    },
-    render: function() {
-        return (
-                <section className='codepen'>
-                    <h3>Your config code:</h3>
-                    <pre className='language-javascript'>
-                        <code className='javascript language-javascript'>
-                            {this.buildCodeString()}
-                        </code>
-                    </pre>
-                </section>
             );
     }
 });
@@ -140,8 +111,8 @@ let Parent = React.createClass({
         stateOb.optionsObject = configOptions;
         return stateOb;
     },
-    handleUpdate: function(event) {
-        console.log(event);
+    handleUpdate: function(ob) {
+        console.log('Object = ' , ob);
     },
     render: function() {
         return (
@@ -157,5 +128,3 @@ let Parent = React.createClass({
 });
 
 ReactDOM.render(<Parent />, document.getElementById('reactContainer'));
-
-// Events.subscribe('input/update', function(ob) {console.log(ob.inputName)});
