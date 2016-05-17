@@ -30,4 +30,7 @@ h1, h2, h3, h4, h5, h6 {
 .codepen {
     width: 100%;
     clear: both;
+        code {
+            font-family: "Fira Mono", Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;
+        }
 }

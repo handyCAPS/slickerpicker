@@ -34,14 +34,20 @@
     padding: 0 1em;
     vertical-align: middle;
         & ~ textarea {
-            vertical-align: top
+            vertical-align: top;
         }
 }
 
 .input-group__input {
-    font-family: "Fira Mono", "Lucida Sans Typewriter", monospace;
+    font-family: "Fira Mono", Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;
+    padding: modScale(-3) + em modScale(-2) + em;
     width: 65%;
     vertical-align: middle;
     border: 1px solid lightgrey;
     border-radius: 3px;
+}
+
+.input-group__input--textarea {
+    // padding: modScale(-3) + em modScale(-2) + em;
+    // color: slategrey;
 }
