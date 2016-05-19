@@ -21,8 +21,7 @@ let InputGroup = React.createClass({
         //     areaFunction: event.target.value
         // });
         // console.log(event.target);
-        // Events.publish('input/update', {inputName, content});
-        this.props.onChange({inputName, content});
+        Events.publish('input/update', {inputName, content});
     },
     render: function() {
         let inputName = this.props.inputname;
@@ -52,9 +51,6 @@ let InputGroup = React.createClass({
 });
 
 let Card = React.createClass({
-    handleUpdate: function(ob) {
-        this.props.onChange(ob);
-    },
     render: function() {
         let headerStyle = {
             textTransform: 'capitalize'
@@ -70,7 +66,7 @@ let Card = React.createClass({
                     <h2 style={headerStyle}>{this.props.configType}</h2>
                     {inputArr.map(function(type, i) {
                         let textArea = typeof this.props.inputTypes[type] === 'function';
-                        return (<InputGroup key={i + type} inputname={type} textArea={textArea} onChange={this.handleUpdate} />);
+                        return (<InputGroup key={i + type} inputname={type} textArea={textArea} />);
                     }.bind(this))}
                 </div>
             );
@@ -88,12 +84,9 @@ let CardBoard = React.createClass({
                     inputTypes={this.props.optionsObject[option]} />
             );
     },
-    handleUpdate: function(ob) {
-        this.props.onChange(ob);
-    },
     render: function() {
         return (
-                <div className='cardWrap' onChange={this.handleUpdate}>
+                <div className='cardWrap'>
                     {this.props.optionsArray.map(this.allCards)}
                 </div>
             );
@@ -111,17 +104,23 @@ let Parent = React.createClass({
         stateOb.optionsObject = configOptions;
         return stateOb;
     },
+    formatFunction: function(fn) {
+
+    },
     handleUpdate: function(ob) {
-        console.log('Object = ' , ob);
+        console.log('Object = ' , ob.content.replace(/[^a-z]/gi,''));
+    },
+    componentDidMount: function() {
+        Events.subscribe('input/update', this.handleUpdate);
     },
     render: function() {
         return (
                 <div>
                     <CardBoard
-                        onChange={this.handleUpdate}
                         optionsArray={this.state.optionsArray}
                         optionsObject={this.state.optionsObject} />
-                    <ResultCode />
+                    <ResultCode
+                        optionsObject={this.state.optionsObject}/>
                 </div>
             );
     }

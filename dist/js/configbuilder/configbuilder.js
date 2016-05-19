@@ -31,8 +31,7 @@ var InputGroup = React.createClass({
         //     areaFunction: event.target.value
         // });
         // console.log(event.target);
-        // Events.publish('input/update', {inputName, content});
-        this.props.onChange({ inputName: inputName, content: content });
+        _Events2.default.publish('input/update', { inputName: inputName, content: content });
     },
     render: function render() {
         var inputName = this.props.inputname;
@@ -68,9 +67,6 @@ var InputGroup = React.createClass({
 var Card = React.createClass({
     displayName: 'Card',
 
-    handleUpdate: function handleUpdate(ob) {
-        this.props.onChange(ob);
-    },
     render: function render() {
         var headerStyle = {
             textTransform: 'capitalize'
@@ -91,7 +87,7 @@ var Card = React.createClass({
             ),
             inputArr.map(function (type, i) {
                 var textArea = typeof this.props.inputTypes[type] === 'function';
-                return React.createElement(InputGroup, { key: i + type, inputname: type, textArea: textArea, onChange: this.handleUpdate });
+                return React.createElement(InputGroup, { key: i + type, inputname: type, textArea: textArea });
             }.bind(this))
         );
     }
@@ -108,13 +104,10 @@ var CardBoard = React.createClass({
             optionsObject: this.props.optionsObject,
             inputTypes: this.props.optionsObject[option] });
     },
-    handleUpdate: function handleUpdate(ob) {
-        this.props.onChange(ob);
-    },
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'cardWrap', onChange: this.handleUpdate },
+            { className: 'cardWrap' },
             this.props.optionsArray.map(this.allCards)
         );
     }
@@ -132,18 +125,22 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
+    formatFunction: function formatFunction(fn) {},
     handleUpdate: function handleUpdate(ob) {
-        console.log('Object = ', ob);
+        console.log('Object = ', ob.content.replace(/[^a-z]/gi, ''));
+    },
+    componentDidMount: function componentDidMount() {
+        _Events2.default.subscribe('input/update', this.handleUpdate);
     },
     render: function render() {
         return React.createElement(
             'div',
             null,
             React.createElement(CardBoard, {
-                onChange: this.handleUpdate,
                 optionsArray: this.state.optionsArray,
                 optionsObject: this.state.optionsObject }),
-            React.createElement(_resultcode2.default, null)
+            React.createElement(_resultcode2.default, {
+                optionsObject: this.state.optionsObject })
         );
     }
 });
