@@ -5,7 +5,7 @@ const configOptions = {
         yearWrapper: ''
     },
     events: {
-        onInit: function() {}
+        onInit: 'function() {\n    \n}'
     },
     colors: {
         backgroundColor: ''

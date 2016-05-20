@@ -1,6 +1,8 @@
 
 const React = require('react');
 
+const ReactDOM = require('react-dom');
+
 import configOptions from './configoptions';
 
 import Events from './Events';
@@ -15,6 +17,7 @@ let InputGroup = React.createClass({
         };
     },
     update: function(event) {
+        console.log('configType: ' + this.props.configType);
         let inputName = event.target.name,
             content = event.target.value,
             configType = this.props.configType;
@@ -25,7 +28,6 @@ let InputGroup = React.createClass({
         let onChangeCb = this.update;
 
         let inputEl = (<input
-                        configType={this.props.configType}
                         onChange={onChangeCb}
                         className='input-group__input'
                         name={inputName} />);
@@ -33,7 +35,6 @@ let InputGroup = React.createClass({
         if (this.props.textArea === true) {
             inputEl = (
                     <textarea
-                        configType={this.props.configType}
                         className='input-group__input input-group__input--textarea'
                         rows='3'
                         onChange={onChangeCb}
@@ -67,7 +68,7 @@ let Card = React.createClass({
                 <div className='card'>
                     <h2 style={headerStyle}>{this.props.configType}</h2>
                     {inputArr.map(function(type, i) {
-                        let textArea = typeof this.props.inputTypes[type] === 'function';
+                        let textArea = this.props.inputTypes[type].indexOf('function') === 0;
                         return (<InputGroup
                             configType={this.props.configType}
                             fString={this.props.fString}
@@ -103,6 +104,48 @@ let CardBoard = React.createClass({
 
 
 let Parent = React.createClass({
+    fString: "function() {\n    \n}",
+    getConfigCodeArray: function() {
+        let confOb = this.state.optionsObject,
+            confArray = [];
+        for (let key in confOb) {
+            confArray.push(confOb[key]);
+        }
+        console.log(confArray);
+        return confArray.map(function(ob) {
+            for (let key in ob) {
+                if (ob[key] === '') {
+                    delete ob[key];
+                }
+            }
+            return ob;
+        });
+    },
+    getCodeString: function() {
+        function mapCodeArray(v) {
+            let codeArray = [],
+                denom = "'";
+            for (let key in v) {
+                if (typeof v[key] !== 'string') { return [v[key]].map(mapCodeArray); }
+                if (v[key].trim().indexOf('function') === 0) { denom = ''; }
+                codeArray.push('    ' + key + ": " + denom + v[key] + denom);
+            }
+            return codeArray.join(",\n");
+        }
+        return "var config = {\n" +
+            this.getConfigCodeArray()
+                .map(mapCodeArray)
+                .join(',\n') +
+                "\n};"
+    },
+    handleUpdate: function(ob) {
+        if (ob.content.trim() !== '' && ob.content.trim() !== this.fString) {
+            let confOb = this.state.optionsObject;
+            confOb[ob.configType][ob.inputName] = ob.content;
+            this.setState({optionsObject: confOb});
+            window.setTimeout(Prism.highlightAll, 1);
+        }
+    },
     getInitialState: function() {
         let stateOb = {};
         stateOb.optionsArray = [];
@@ -111,15 +154,6 @@ let Parent = React.createClass({
         }
         stateOb.optionsObject = configOptions;
         return stateOb;
-    },
-    fString: "function() {\n    \n}",
-    handleUpdate: function(ob) {
-        if (ob.content.trim() !== '' && ob.content.trim() !== this.fString) {
-            let newObject = this.state.optionsObject;
-            newObject[ob.configType] = ob.content;
-            this.setState({optionsObject: newObject});
-        }
-        console.log(ob.configType, ob.content, this.fString, ob.content === this.fString);
     },
     componentDidMount: function() {
         Events.subscribe('input/update', this.handleUpdate);
@@ -132,7 +166,8 @@ let Parent = React.createClass({
                         optionsArray={this.state.optionsArray}
                         optionsObject={this.state.optionsObject} />
                     <ResultCode
-                        optionsObject={this.state.optionsObject}/>
+                        optionsObject={this.state.optionsObject}
+                        codeString={this.getCodeString()} />
                 </div>
             );
     }
