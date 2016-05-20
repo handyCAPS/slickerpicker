@@ -21,28 +21,34 @@ var InputGroup = React.createClass({
 
     getInitialState: function getInitialState() {
         return {
-            areaFunction: "function() {\n    \n}"
+            areaFunction: this.props.fString
         };
     },
     update: function update(event) {
         var inputName = event.target.name,
-            content = event.target.value;
+            content = event.target.value,
+            configType = this.props.configType;
         // this.setState({
         //     areaFunction: event.target.value
         // });
-        // console.log(event.target);
-        _Events2.default.publish('input/update', { inputName: inputName, content: content });
+        console.log(event.target);
+        _Events2.default.publish('input/update', { inputName: inputName, content: content, configType: configType, event: event });
     },
     render: function render() {
         var inputName = this.props.inputname;
         var onChangeCb = this.update;
 
-        var inputEl = React.createElement('input', { onChange: onChangeCb, className: 'input-group__input', name: inputName });
+        var inputEl = React.createElement('input', {
+            configType: this.props.configType,
+            onChange: onChangeCb,
+            className: 'input-group__input',
+            name: inputName });
 
         if (this.props.textArea === true) {
             inputEl = React.createElement(
                 'textarea',
                 {
+                    configType: this.props.configType,
                     className: 'input-group__input input-group__input--textarea',
                     rows: '3',
                     onChange: onChangeCb,
@@ -87,7 +93,12 @@ var Card = React.createClass({
             ),
             inputArr.map(function (type, i) {
                 var textArea = typeof this.props.inputTypes[type] === 'function';
-                return React.createElement(InputGroup, { key: i + type, inputname: type, textArea: textArea });
+                return React.createElement(InputGroup, {
+                    configType: this.props.configType,
+                    fString: this.props.fString,
+                    key: i + type,
+                    inputname: type,
+                    textArea: textArea });
             }.bind(this))
         );
     }
@@ -100,6 +111,7 @@ var CardBoard = React.createClass({
         return React.createElement(Card, {
             onChange: this.handleUpdate,
             key: i,
+            fString: this.props.fString,
             configType: option,
             optionsObject: this.props.optionsObject,
             inputTypes: this.props.optionsObject[option] });
@@ -125,9 +137,9 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
-    formatFunction: function formatFunction(fn) {},
+    fString: "function() {\n    \n}",
     handleUpdate: function handleUpdate(ob) {
-        console.log('Object = ', ob.content.replace(/[^a-z]/gi, ''));
+        console.log(ob.configType, ob.content, this.fString, ob.content === this.fString);
     },
     componentDidMount: function componentDidMount() {
         _Events2.default.subscribe('input/update', this.handleUpdate);
@@ -137,6 +149,7 @@ var Parent = React.createClass({
             'div',
             null,
             React.createElement(CardBoard, {
+                fString: this.fString,
                 optionsArray: this.state.optionsArray,
                 optionsObject: this.state.optionsObject }),
             React.createElement(_resultcode2.default, {
