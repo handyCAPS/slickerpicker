@@ -1,8 +1,8 @@
 
 
-var Events = (function(){
-  var topics = {};
-  var hOP = topics.hasOwnProperty;
+const Events = (function(){
+  let topics = {};
+  let hOP = topics.hasOwnProperty;
 
   return {
     subscribe: function(topic, listener) {
@@ -10,7 +10,7 @@ var Events = (function(){
       if(!hOP.call(topics, topic)) topics[topic] = [];
 
       // Add the listener to queue
-      var index = topics[topic].push(listener) -1;
+      let index = topics[topic].push(listener) -1;
 
       // Provide handle back for removal of topic
       return {
