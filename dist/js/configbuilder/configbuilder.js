@@ -27,16 +27,21 @@ var Parent = React.createClass({
 
     fString: "function() {\n    \n}",
     getConfigCodeArray: function getConfigCodeArray() {
-        var confOb = this.state.optionsObject,
+        var confOb = Object.assign({}, this.state.optionsObject),
             confArray = [];
         for (var key in confOb) {
-            confArray.push(confOb[key]);
+            var tmpOb = {};
+            tmpOb[key] = Object.assign({}, confOb[key]);
+            confArray.push(tmpOb);
         }
         console.log(confArray);
         return confArray.map(function (ob) {
-            for (var _key in ob) {
-                if (ob[_key] === '') {
-                    delete ob[_key];
+            for (var type in ob) {
+                console.log('Ob= ', ob);
+                for (var prop in ob[type]) {
+                    if (ob[type][prop] === '') {
+                        delete ob[prop];
+                    }
                 }
             }
             return ob;

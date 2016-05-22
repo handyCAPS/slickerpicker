@@ -15,16 +15,21 @@ import CardBoard from './Cardboard';
 let Parent = React.createClass({
     fString: "function() {\n    \n}",
     getConfigCodeArray: function() {
-        let confOb = this.state.optionsObject,
+        let confOb = Object.assign({}, this.state.optionsObject),
             confArray = [];
         for (let key in confOb) {
-            confArray.push(confOb[key]);
+            let tmpOb = {};
+            tmpOb[key] = Object.assign({}, confOb[key]);
+            confArray.push(tmpOb);
         }
         console.log(confArray);
         return confArray.map(function(ob) {
-            for (let key in ob) {
-                if (ob[key] === '') {
-                    delete ob[key];
+            for (let type in ob) {
+                console.log('Ob= ' , ob);
+                for (let prop in ob[type]) {
+                    if (ob[type][prop] === '') {
+                        delete ob[prop];
+                    }
                 }
             }
             return ob;
