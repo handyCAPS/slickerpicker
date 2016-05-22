@@ -6,9 +6,11 @@ function formatObject(object) {
     let resultArray = [];
 
     function buildString(prop, value) {
-        let resultString = prop + ": ";
+        let resultString = prop + ": ",
+            denom = "'";
         if (typeof value === 'string') {
-            resultString += "'" + value + "'";
+            if (value.indexOf('function') === 0) { denom = ''; }
+            resultString += denom + value + denom;
         } else if (axis.isObject(value)) {
             resultString += '{\n    ';
             for (let deepProp in value) {
