@@ -22,8 +22,31 @@ var React = require('react');
 
 var ReactDOM = require('react-dom');
 
+<<<<<<< d34a4fc15d9ac2115e75386a158bbc7143e8b2d1
 var Parent = React.createClass({
     displayName: 'Parent',
+=======
+    getInitialState: function getInitialState() {
+        return {
+            areaFunction: this.props.fString
+        };
+    },
+    update: function update(event) {
+        var inputName = event.target.name,
+            content = event.target.value,
+            configType = this.props.configType;
+        _Events2.default.publish('input/update', { inputName: inputName, content: content, configType: configType, event: event });
+    },
+    render: function render() {
+        var inputName = this.props.inputname;
+        var onChangeCb = this.update;
+
+        var inputEl = React.createElement('input', {
+            configType: this.props.configType,
+            onChange: onChangeCb,
+            className: 'input-group__input',
+            name: inputName });
+>>>>>>> stash
 
     fString: "function() {\n    \n}",
     getConfigCodeArray: function getConfigCodeArray() {
@@ -81,6 +104,18 @@ var Parent = React.createClass({
         stateOb.optionsObject = _configoptions2.default;
         return stateOb;
     },
+<<<<<<< d34a4fc15d9ac2115e75386a158bbc7143e8b2d1
+=======
+    fString: "function() {\n    \n}",
+    handleUpdate: function handleUpdate(ob) {
+        if (ob.content.trim() !== '' && ob.content.trim() !== this.fString) {
+            var newObject = this.state.optionsObject;
+            newObject[ob.configType] = ob.content;
+            this.setState({ optionsObject: newObject });
+        }
+        console.log(ob.configType, ob.content, this.fString, ob.content === this.fString);
+    },
+>>>>>>> stash
     componentDidMount: function componentDidMount() {
         _Events2.default.subscribe('input/update', this.handleUpdate);
     },
