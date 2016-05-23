@@ -34,6 +34,7 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         browser: true,
+        esnext: true,
         globals: {
           require: true
         }
