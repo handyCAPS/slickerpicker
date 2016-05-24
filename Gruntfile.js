@@ -58,7 +58,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'js', // Custom folder
-          src: ['**/*.jsx'],
+          src: ['**/*.{jsx,js}'],
           dest: 'dist/js/', // Custom folder
           ext: '.js'
         }]
@@ -87,7 +87,7 @@ module.exports = function(grunt) {
     postcss: {
       options: {
           proseccors: [require('autoprefixer')({browsers: 'last 2 versions'})]
-        },        
+        },
         dist: {
           src: 'dist/css/**/*.css'
         }

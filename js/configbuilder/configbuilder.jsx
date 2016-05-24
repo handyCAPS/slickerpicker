@@ -3,6 +3,10 @@ const React = require('react');
 
 const ReactDOM = require('react-dom');
 
+
+import objectToArray from './objectToArray';
+
+
 import configOptions from './configoptions';
 
 import Events from './Events';
@@ -47,8 +51,9 @@ let Parent = React.createClass({
             return codeArray.join(",\n");
         }
         return "var config = {\n" +
-            this.getConfigCodeArray()
-                .map(mapCodeArray)
+            // this.getConfigCodeArray()
+            //     .map(mapCodeArray)
+            objectToArray(this.state.optionsObject)
                 .join(',\n') +
                 "\n};"
     },

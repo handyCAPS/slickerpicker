@@ -1,5 +1,9 @@
 'use strict';
 
+var _objectToArray = require('./objectToArray');
+
+var _objectToArray2 = _interopRequireDefault(_objectToArray);
+
 var _configoptions = require('./configoptions');
 
 var _configoptions2 = _interopRequireDefault(_configoptions);
@@ -62,7 +66,10 @@ var Parent = React.createClass({
             }
             return codeArray.join(",\n");
         }
-        return "var config = {\n" + this.getConfigCodeArray().map(mapCodeArray).join(',\n') + "\n};";
+        return "var config = {\n" +
+        // this.getConfigCodeArray()
+        //     .map(mapCodeArray)
+        (0, _objectToArray2.default)(this.state.optionsObject).join(',\n') + "\n};";
     },
     handleUpdate: function handleUpdate(ob) {
         if (ob.content.trim() !== '' && ob.content.trim() !== this.fString) {

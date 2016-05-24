@@ -1,7 +1,7 @@
 
 const axis = require('axis.js/dist/axis.js');
 
-function formatObject(object) {
+function objectToArray(object) {
 
     let resultArray = [];
 
@@ -12,11 +12,9 @@ function formatObject(object) {
             if (value.indexOf('function') === 0) { denom = ''; }
             resultString += denom + value + denom;
         } else if (axis.isObject(value)) {
-            resultString += '{\n    ';
             for (let deepProp in value) {
                 resultString += buildString(deepProp, value[deepProp]);
             }
-            resultString += '\n    }';
         }
         return resultString;
     }
@@ -29,4 +27,4 @@ function formatObject(object) {
 
 }
 
-export default formatObject;
+export default objectToArray;

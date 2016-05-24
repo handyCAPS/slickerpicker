@@ -3,7 +3,7 @@ import {expect} from 'chai';
 
 import configOptions from '../dist/js/configbuilder/configoptions.js';
 
-import formatObject from '../js/configbuilder/formatObject.js';
+import objectToArray from '../js/configbuilder/objectToArray.js';
 import cloneObject from '../js/configbuilder/cloneObject.js';
 import cloneFormat from '../js/configbuilder/cloneFormat.js';
 
