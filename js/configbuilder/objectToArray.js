@@ -1,9 +1,12 @@
 
 const axis = require('axis.js/dist/axis.js');
 
+import propToString from './propToString';
+
 function objectToArray(object) {
 
-    let resultArray = [];
+    let resultArray = [],
+        propString = '';
 
     function buildString(prop, value) {
         let resultString = prop + ": ",
@@ -20,7 +23,14 @@ function objectToArray(object) {
     }
 
     for (let prop in object) {
-        resultArray.push(buildString(prop, object[prop]));
+        let value = object[prop];
+        if (axis.isObject(value)) {
+
+        }
+        if (axis.isString(value)) {
+            propString = propToString(prop, value);
+        }
+        resultArray.push(propString);
     }
 
     return resultArray;
