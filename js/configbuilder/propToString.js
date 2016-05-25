@@ -1,11 +1,11 @@
 
-function propToString(ob) {
+function propToString(prop, val) {
     let string = '',
         denom = "'";
-    for (let key in ob) {
-        if (ob[key].indexOf('function') === 0) { denom = ''; }
-        string += key + ': ' + denom + ob[key] + denom;
-    }
+   
+    if (val.indexOf('function') === 0) { denom = ''; }
+    string += prop + ': ' + denom + val + denom;
+
     return string;
 }
 
