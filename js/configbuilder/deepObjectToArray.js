@@ -1,0 +1,21 @@
+
+const axis = require('axis.js/dist/axis.js');
+
+function deepObjectToArray(prop, value) {
+
+    let resultArray = [prop],
+        resultString;
+
+    for (let key in value) {
+        if (axis.isObject(value[key])) {
+            resultString = deepObjectToArray(key, value[key]);
+        } else {
+            resultString = [key + ': ' + value[key]];
+        }
+        resultArray.push(resultString);
+    }
+
+    return resultArray;
+}
+
+export default deepObjectToArray;
