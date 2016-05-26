@@ -40,4 +40,17 @@ describe('Testing getConfigString', () => {
         expect(actual).to.equal(expected);
     });
 
+    it('should work with objectToArray', () => {
+        const testObject = {
+            prop1: 'value1',
+            prop2: {
+                deepProp1: 'deepValue'
+            }
+        };
+        const testArray = objectToArray(testObject);
+        const actual = getConfigString(testArray);
+        const expected = stringOpening + "prop1: 'value1',\n    prop2: {\n        deepProp1: 'deepValue'\n    }" + stringClosing;
+        expect(actual).to.equal(expected);
+    });
+
 });

@@ -6,7 +6,7 @@
 
     it('should take a nested object and turn it into an array', () => {
         const actual = deepObjectToArray('prop', {deepProp: 'deepValue'});
-        const expected = ['prop', ['deepProp: deepValue']];
+        const expected = ['prop', ["deepProp: 'deepValue'"]];
         expect(actual).to.deep.equal(expected);
     });
 
@@ -22,7 +22,7 @@
         const expected = ['level1',
             ['level2',
                 ['level3',
-                    ['deepProp: deepValue']
+                    ["deepProp: 'deepValue'"]
                 ]
             ]
         ];

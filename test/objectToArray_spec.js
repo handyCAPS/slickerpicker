@@ -16,7 +16,7 @@ describe('Testing objectToArray', () => {
 
     const resultArray = [
         "prop1: 'value1'",
-        ["prop2", ['nestedProp: nestedValue']],
+        ["prop2", [ "nestedProp: 'nestedValue'"]],
         "prop3: function() {\n    \n}"
     ];
 
