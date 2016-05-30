@@ -53,4 +53,18 @@ describe('Testing getConfigString', () => {
         expect(actual).to.equal(expected);
     });
 
+    it('should handle deeply nested objects', () => {
+        const testObject = {
+            prop1: {
+                level2: {
+                    level3: 'deepValue'
+                }
+            }
+        };
+        const testArray = objectToArray(testObject);
+        const actual = getConfigString(testArray);
+        const expected = stringOpening + "prop1: {\n    level2: {\n        level3: 'deepValue'\n        }\n    }" + stringClosing;
+        expect(actual).to.equal(expected);
+    });
+
 });
