@@ -5,7 +5,7 @@ function getConfigString(configArray) {
 
     const tabSpace = '    ';
 
-    let level = 2;
+    let level = 1;
 
     function tabSpaceN(n) {
         let result = '';
@@ -22,15 +22,15 @@ function getConfigString(configArray) {
             level++;
             values = buildNestedObject(valueArray[0], valueArray[1]);
         } else {
-            values = valueArray.join(',\n' + tabSpace);
-            // level = 2;
+            values = valueArray.join(',\n' + tabSpaceN(level));
+            level = 1;
         }
-        return prop +
+        return tabSpaceN(level - 1) + prop +
             ': {\n' +
-            tabSpaceN(level) +
+            tabSpaceN(level + 1) +
             values +
             '\n' +
-            tabSpace +
+            tabSpaceN(level) +
             '}';
     }
 

@@ -63,7 +63,8 @@ describe('Testing getConfigString', () => {
         };
         const testArray = objectToArray(testObject);
         const actual = getConfigString(testArray);
-        const expected = stringOpening + "prop1: {\n    level2: {\n        level3: 'deepValue'\n        }\n    }" + stringClosing;
+        const expected = stringOpening + "prop1: {\n        level2: {\n            level3: 'deepValue'\n        }\n    }" + stringClosing;
+        console.log(actual);
         expect(actual).to.equal(expected);
     });
 
