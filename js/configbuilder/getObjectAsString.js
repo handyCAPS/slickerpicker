@@ -10,12 +10,8 @@ import tabSpaceN from './tabSpaceN';
  */
 function getObjectAsString(prop, valueArray, nDeep) {
 
-    let padding = '',
+    let padding = tabSpaceN(nDeep || 0),
         firstPadding = '';
-
-    if (nDeep !== undefined) {
-        padding = tabSpaceN(nDeep);
-    }
 
     if (nDeep !== 1) {
         firstPadding = padding;
@@ -24,7 +20,7 @@ function getObjectAsString(prop, valueArray, nDeep) {
     let valueString = padding + padding + valueArray.join(',\n' + padding + padding);
 
     if (Array.isArray(valueArray[1])) {
-        valueString = getObjectAsString(valueArray[1][0], valueArray[1][1], ++nDeep);
+        valueString = getObjectAsString(valueArray[0], valueArray[1], ++nDeep);
     }
 
     let resultString = firstPadding + prop + ': {\n';
